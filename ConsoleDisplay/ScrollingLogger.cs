@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace TarangBot.ConsoleDisplay
@@ -14,23 +15,25 @@ namespace TarangBot.ConsoleDisplay
             Height = height;
         }
 
-        private List<string> lines = new List<string>();
+        private Queue<string> lines = new Queue<string>();
 
         private int start_index = 0;
 
         public void Log(string s)
         {
-            lines.Add($"[{DateTime.Now.ToString("HH:mm:ss")}]: {s}");
+            lines.Enqueue($"[{DateTime.Now.ToString("HH:mm:ss")}]: {s}");
             if (lines.Count - start_index > Height)
                 start_index++;
-            
+
+
         }
 
         public override void Draw(CDisplay display)
         {
+            string[] lin = lines.ToArray();
             for (int i = start_index; i < lines.Count; i++)
             {
-                display.DrawString(0, i - start_index, lines[i]);
+                display.DrawString(0, i - start_index, lin[i]);
             }
         }
     }

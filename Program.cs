@@ -1,29 +1,41 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using TarangBot.ConsoleDisplay;
+using TarangBot.GSheetsAdapters;
 
 namespace TarangBot
 {
     class Program
     {
+        static ScrollingLogger log = new ScrollingLogger(1, 1, Console.WindowWidth - 3, (Console.WindowHeight * 2) / 5);
+
         static void Main(string[] args)
         {
-            CDisplay display = new CDisplay();
+            Main().Wait();
+        }
 
-            ScrollingLogger log = new ScrollingLogger(1, 1, Console.WindowWidth - 3, 10);
+        static async Task Main()
+        {
+            CDisplay display = new CDisplay();
+            GSheetAdapter adapter = new GSheetAdapter("1z17_SLl3-Aq1SnjmW7pD1FETX4ychvAlbjCwHehl8Ko", "AIzaSyDGaKmqXY_4oQ_76i6M2GlfNp9kYl4A1Fc");
+
+            adapter.Log = log.Log;
 
             display.DisplayElements.Add(log);
 
             display.Resize();
             display.Start();
 
+            await adapter.Poll();
+
+            log.Log("Test");
+
+
             ConsoleKeyInfo s = Console.ReadKey(true);
-            while (s.Key != ConsoleKey.Escape)
-            {
-                log.Log("Test");
-                Thread.Sleep(1000);
-            }
             display.Stop();
         }
+
+
     }
 }
