@@ -18,7 +18,7 @@ namespace TarangBot
         static async Task Main()
         {
             CDisplay display = new CDisplay();
-            GSheetAdapter adapter = new GSheetAdapter("1z17_SLl3-Aq1SnjmW7pD1FETX4ychvAlbjCwHehl8Ko", "AIzaSyDGaKmqXY_4oQ_76i6M2GlfNp9kYl4A1Fc");
+            GSheetAdapter adapter = new GSheetAdapter("1z17_SLl3-Aq1SnjmW7pD1FETX4ychvAlbjCwHehl8Ko", "");
 
             adapter.Log = log.Log;
 
