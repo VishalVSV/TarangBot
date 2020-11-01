@@ -18,8 +18,12 @@ namespace TarangBot.ConsoleDisplay
 
         private CancellationTokenSource draw_loop_cts;
 
-        public List<DisplayElement> DisplayElements = new List<DisplayElement>();
+        private List<DisplayElement> DisplayElements = new List<DisplayElement>();
 
+        public void RegisterElement(DisplayElement element)
+        {
+            DisplayElements.Add(element);
+        }
 
         public int Width, Height;
 
