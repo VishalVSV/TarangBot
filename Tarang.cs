@@ -26,6 +26,7 @@ namespace TarangBot
             {
                 Data.MessageQueue.Dispatch("NewRegistration", new_record);
             };
+
             Data.MessageQueue.On("NewRegistration", (a) =>
              {
                  Data.Logger.Log("New Record Received!");

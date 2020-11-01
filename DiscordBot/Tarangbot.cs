@@ -15,6 +15,8 @@ namespace TarangBot.DiscordBot
 
         public List<string> usernames = new List<string>();
 
+        public CommandHandler commandHandler = new CommandHandler("TarangBot.DiscordBot.Commands");
+
         public async Task Start()
         {
             _client = new DiscordSocketClient();
@@ -61,6 +63,8 @@ namespace TarangBot.DiscordBot
 
         private async Task _client_UserJoined(SocketGuildUser arg)//Move to a separate class to organize state the bot should only dispatch events
         {
+            Tarang.Data.MessageQueue.Dispatch("OnUserJoin", arg);
+
             try
             {
                 if (usernames.Contains(arg.Username + "#" + arg.Discriminator))

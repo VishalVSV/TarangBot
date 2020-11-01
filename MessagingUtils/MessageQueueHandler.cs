@@ -29,7 +29,7 @@ namespace TarangBot.MessagingUtils
             msg_queue.Enqueue(msg);
         }
 
-        public void Dispatch(string EventName,object[] parameters)
+        public void Dispatch(string EventName,params object[] parameters)
         {
             msg_queue.Enqueue(Message.ConstructMessage(EventName, parameters));
         }
