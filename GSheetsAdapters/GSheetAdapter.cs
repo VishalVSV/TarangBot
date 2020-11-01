@@ -24,12 +24,15 @@ namespace TarangBot.GSheetsAdapters
         [JsonIgnore]
         public Action<string[]> OnNewRecord;
 
+        public int ProcessedRecords = 0;
+
         static GSheetAdapter()
         {
             httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromSeconds(5);
         }
 
-        public GSheetAdapter(string sheet_id,string API_key)
+        public GSheetAdapter(string sheet_id, string API_key)
         {
             Sheet_Id = sheet_id;
             this.API_key = API_key;
@@ -48,16 +51,20 @@ namespace TarangBot.GSheetsAdapters
 
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);
 
-                if(s.values.Count > records.Count)
+                if (s.values.Count > ProcessedRecords)
                 {
-                    for (int i = records.Count; i < s.values.Count; i++)
+                    for (int i = ProcessedRecords; i < s.values.Count; i++)
                     {
-                        records.Add(s.values[i]);
-                        OnNewRecord?.Invoke(s.values[i]);
+                        ProcessedRecords++;
+                        if (s.values[i].Length > 0)
+                        {
+                            records.Add(s.values[i]);
+                            OnNewRecord?.Invoke(s.values[i]);
+                        }
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log(e.Message);
             }

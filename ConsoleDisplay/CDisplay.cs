@@ -68,27 +68,34 @@ namespace TarangBot.ConsoleDisplay
         
         public void Draw()
         {
-            Clear();
-
-            Console.CursorVisible = false;
-            for (int i = 0; i < DisplayElements.Count; i++)
+            try
             {
-                currently_drawing = DisplayElements[i];
+                Clear();
 
-                DisplayElements[i].Draw(this);
-
-                if (DisplayElements[i].Outline)
+                Console.CursorVisible = false;
+                for (int i = 0; i < DisplayElements.Count; i++)
                 {
-                    SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, '▒');
-                    SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, '▒');
-                    SSDrawLine(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
-                    SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
+                    currently_drawing = DisplayElements[i];
 
+                    DisplayElements[i].Draw(this);
+
+                    if (DisplayElements[i].Outline)
+                    {
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, '▒');
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, '▒');
+                        SSDrawLine(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
+
+                    }
                 }
-            }
 
-            Console.SetCursorPosition(0, 0);
-            Console.Write(buffer.ToString());
+                Console.SetCursorPosition(0, 0);
+                Console.Write(buffer.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
     }

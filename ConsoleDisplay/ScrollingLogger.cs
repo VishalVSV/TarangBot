@@ -8,7 +8,7 @@ namespace TarangBot.ConsoleDisplay
 {
     public class ScrollingLogger : DisplayElement, IDestructible
     {
-        public ScrollingLogger(int x,int y,int width,int height)
+        public ScrollingLogger(int x, int y, int width, int height)
         {
             Left = x;
             Top = y;
@@ -20,7 +20,7 @@ namespace TarangBot.ConsoleDisplay
 
         private int start_index = 0;
 
-        private const int LINE_OVERHEAD = 50;
+        private const int LINE_OVERHEAD = 100;
 
         public void Log(string s)
         {
@@ -28,14 +28,14 @@ namespace TarangBot.ConsoleDisplay
             if (lines.Count - start_index > Height)
                 start_index++;
 
-            if(lines.Count > Height + LINE_OVERHEAD)
+            if (lines.Count > Height + LINE_OVERHEAD)
             {
                 lines.Enqueue($"[{DateTime.Now.ToString("HH:mm:ss")}]: Saving Log");
                 if (lines.Count - start_index > Height)
                     start_index++;
 
-                string[] to_save = new string[lines.Count - Height - LINE_OVERHEAD];
-                for (int i = 0; i < lines.Count - Height - LINE_OVERHEAD; i++)
+                string[] to_save = new string[lines.Count - Height - LINE_OVERHEAD / 2];
+                for (int i = 0; i < lines.Count - Height - LINE_OVERHEAD / 2; i++)
                 {
                     to_save[i] = lines.Dequeue();
                 }

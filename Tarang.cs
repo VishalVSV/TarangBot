@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TarangBot.GeneralUtils;
 
@@ -31,6 +32,10 @@ namespace TarangBot
              });
 
             Data.display.Start();
+            Task bot = Data.TarangBot.Start();
+
+            Data.MessageQueue.Log = Data.Logger.Log;
+            Data.sheetAdapter.Log = Data.Logger.Log;
 
             DateTime last_sheet_poll = DateTime.Now;
             bool end = false;
@@ -38,22 +43,25 @@ namespace TarangBot
             {
                 if ((DateTime.Now - last_sheet_poll) > Data.SheetPollInterval)
                 {
-                    last_sheet_poll = DateTime.Now;
                     await Data.sheetAdapter.Poll();
+                    last_sheet_poll = DateTime.Now;
                 }
 
-                Data.MessageQueue.Log = Data.Logger.Log;
-                Data.sheetAdapter.Log = Data.Logger.Log;
-
                 Data.MessageQueue.HandleEvents();
+
+                Thread.Sleep(10);
 
                 while (Console.KeyAvailable)
                 {
                     if(Console.ReadKey(true).Key == ConsoleKey.Escape)
                     {
                         Data.display.Stop();
+                        await bot;
+                        DestructionHandler.DestroyAll();
+
                         File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented));
                         end = true;
+
                         break;
                     }
                 }
