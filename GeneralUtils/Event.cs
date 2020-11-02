@@ -1,30 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TarangBot.GeneralUtils
 {
-    /*
-    Derive Via event Name 
 
-    Meta Data:
-    ---------------------
-    Small Help Text -> req
-    Descriptive Help Text(Rules)-> req
-    
-    Disc API Stuff - Discuss with Vert when back:
-    -------------------------------
-    Voice Channels => Set up files (Load From JSON and attach to class)
-        => Make this ulong list
-    
-    Event Attr:
-    -------------------------------
-    Max participants per school -> req
-    isTeamEvent 
-    isFlagged 
-    EventDates DateTime[]
-
-     */
 
     public abstract class Event
     {
@@ -35,7 +17,7 @@ namespace TarangBot.GeneralUtils
         //Disc.NET Attrs
         //Get Back to this when Server Structure is figured out
         //public abstract ulong[] channels { get; }
-
+        //public abstract var ChannelConfig { get; } //Depending on format of config => Assuming JSON
         //Event Attrs
 
         //Optionals
