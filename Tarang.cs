@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TarangBot.GeneralUtils;
+using TarangBot.TarangEvent;
 
 namespace TarangBot
 {
@@ -24,7 +25,7 @@ namespace TarangBot
             Data = TarangData.Load("./Data/config.txt");
 
             Data.Init();
-            Data.sheetAdapter.OnNewRecord = (string[] new_record) =>
+            Data.sheetAdapter.OnNewRecord = (new_record) =>
             {
                 Data.MessageQueue.Dispatch("NewRegistration", new_record);
             };
@@ -41,7 +42,12 @@ namespace TarangBot
             Data.sheetAdapter.Log = Data.Logger.Log;
 
             DateTime last_sheet_poll = DateTime.Now;
+            last_sheet_poll = last_sheet_poll.Subtract(TimeSpan.FromSeconds(10));
             bool end = false;
+            
+            Data.roleGiver.Init();
+
+            Data.roleGiver = new RegistrationRoleGiver();
             while (!end)
             {
                 if ((DateTime.Now - last_sheet_poll) > Data.SheetPollInterval)
@@ -60,7 +66,10 @@ namespace TarangBot
                     await bot;
                     DestructionHandler.DestroyAll();
 
-                    File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented));
+                    Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings();
+                    settings.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+                    File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, settings));
                     end = true;
 
                     break;

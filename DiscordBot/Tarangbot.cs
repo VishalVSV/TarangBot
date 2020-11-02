@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Discord.Rest;
 using Discord.WebSocket;
+using Newtonsoft.Json;
 using TarangBot.GeneralUtils;
 
 namespace TarangBot.DiscordBot
 {
     public class Tarangbot : IDestructible
     {
+        [JsonIgnore]
         public DiscordSocketClient _client;
-        
+
         public CommandHandler commandHandler = new CommandHandler("TarangBot.DiscordBot.Commands");
 
         public async Task Start()
@@ -35,7 +36,7 @@ namespace TarangBot.DiscordBot
         private Task _client_Ready()
         {
             _client.SetGameAsync("Tarang 2020");
-            
+
             return Task.CompletedTask;
         }
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TarangBot.TarangEvent
 {
-    public class Participant : RoleAssignable
+    public class TeacherCoordinator : RoleAssignable
     {
         /// <summary>
         /// Their IRL Name
@@ -12,7 +12,7 @@ namespace TarangBot.TarangEvent
         public string Name;
 
         /// <summary>
-        /// Their Discord Username with discriminator
+        /// Their Discord Username
         /// </summary>
         public string UserName;
 
@@ -21,13 +21,9 @@ namespace TarangBot.TarangEvent
         /// </summary>
         public string email_id;
 
-        public List<Event> Registered_Events = new List<Event>(2);
-
         /// <summary> 
         /// Their School Name
         /// </summary>
         public string School_Name;
-
-        //TODO: Constructor for participants and implementation for Teacher Coordinator
     }
 }

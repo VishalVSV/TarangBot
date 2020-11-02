@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using TarangBot.TarangEvent;
 
 namespace TarangBot.GSheetsAdapters
 {
@@ -22,7 +23,7 @@ namespace TarangBot.GSheetsAdapters
         public List<string[]> records = new List<string[]>();
 
         [JsonIgnore]
-        public Action<string[]> OnNewRecord;
+        public Action<Registration> OnNewRecord;
 
         public int ProcessedRecords = 0;
 
@@ -46,7 +47,7 @@ namespace TarangBot.GSheetsAdapters
             Log($"Polling sheets file");
             try
             {
-                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A:Z?key={API_key}");
+                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A2:Z?key={API_key}");
                 File.WriteAllText("./test.txt", get);
 
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);
@@ -59,7 +60,7 @@ namespace TarangBot.GSheetsAdapters
                         if (s.values[i].Length > 0)
                         {
                             records.Add(s.values[i]);
-                            OnNewRecord?.Invoke(s.values[i]);
+                            OnNewRecord?.Invoke(new Registration(s.values[i]));
                         }
                     }
                 }
