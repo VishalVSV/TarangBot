@@ -11,7 +11,7 @@ namespace TarangBot.DiscordBot
 {
     public class Tarangbot : IDestructible
     {
-        private DiscordSocketClient _client;
+        public DiscordSocketClient _client;
         
         public CommandHandler commandHandler = new CommandHandler("TarangBot.DiscordBot.Commands");
 
@@ -23,13 +23,20 @@ namespace TarangBot.DiscordBot
             _client.UserJoined += _client_UserJoined;
             _client.UserLeft += _client_UserLeft;
             _client.MessageReceived += _client_MessageReceived;
-
+            _client.Ready += _client_Ready;
 
             await _client.LoginAsync(Discord.TokenType.Bot, Tarang.Data.DiscordBotToken);
 
             await _client.StartAsync();
 
 
+        }
+
+        private Task _client_Ready()
+        {
+            _client.SetGameAsync("Tarang 2020");
+            
+            return Task.CompletedTask;
         }
 
         private Task _client_UserLeft(SocketGuildUser arg)
