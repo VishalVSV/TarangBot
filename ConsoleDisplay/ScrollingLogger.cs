@@ -8,6 +8,10 @@ namespace TarangBot.ConsoleDisplay
 {
     public class ScrollingLogger : DisplayElement, IDestructible
     {
+        public string LogPath = "./log.txt";
+
+        public bool Save = true;
+
         public ScrollingLogger(int x, int y, int width, int height)
         {
             Left = x;
@@ -16,13 +20,13 @@ namespace TarangBot.ConsoleDisplay
             Height = height;
         }
 
-        private Queue<string> lines = new Queue<string>();
+        protected Queue<string> lines = new Queue<string>();
 
-        private int start_index = 0;
+        protected int start_index = 0;
 
-        private const int LINE_OVERHEAD = 100;
+        protected const int LINE_OVERHEAD = 100;
 
-        public void Log(string s)
+        public virtual void Log(string s)
         {
             lines.Enqueue($"[{DateTime.Now.ToString("HH:mm:ss")}]: {s}");
             if (lines.Count - start_index > Height)
@@ -39,7 +43,8 @@ namespace TarangBot.ConsoleDisplay
                 {
                     to_save[i] = lines.Dequeue();
                 }
-                File.AppendAllLines("./log.txt", to_save);
+                if (Save)
+                    File.AppendAllLines(LogPath, to_save);
             }
         }
 
@@ -54,7 +59,8 @@ namespace TarangBot.ConsoleDisplay
 
         public void OnDestroy()
         {
-            File.AppendAllLines("./log.txt", lines);
+            if (Save)
+                File.AppendAllLines(LogPath, lines);
         }
     }
 }

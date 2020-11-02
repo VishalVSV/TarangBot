@@ -19,6 +19,7 @@ namespace TarangBot
 
         static async Task Main()
         {
+            Console.ReadKey(true);
             await Tarang.Main();
         }
 

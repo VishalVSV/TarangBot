@@ -17,7 +17,7 @@ namespace TarangBot.ConsoleDisplay
 
         public void DrawPixel(int x, int y, char c)
         {
-            if (x >= 0 && x < currently_drawing.Width && y >= 0 && y < currently_drawing.Height)
+            if (x >= 0 && x <= currently_drawing.Width && y >= 0 && y <= currently_drawing.Height)
             {
                 int sx = x + currently_drawing.Left;
                 int sy = y + currently_drawing.Top;

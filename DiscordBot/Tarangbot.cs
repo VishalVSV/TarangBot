@@ -12,9 +12,7 @@ namespace TarangBot.DiscordBot
     public class Tarangbot : IDestructible
     {
         private DiscordSocketClient _client;
-
-        public List<string> usernames = new List<string>();
-
+        
         public CommandHandler commandHandler = new CommandHandler("TarangBot.DiscordBot.Commands");
 
         public async Task Start()
@@ -26,12 +24,6 @@ namespace TarangBot.DiscordBot
             _client.UserLeft += _client_UserLeft;
             _client.MessageReceived += _client_MessageReceived;
 
-            Tarang.Data.MessageQueue.On("NewRegistration", (o) =>
-             {
-                 if (((string[])o).Length == 2)
-                     if (((string[])o)[1].Contains("#"))
-                         usernames.Add(((string[])o)[1]);
-             });
 
             await _client.LoginAsync(Discord.TokenType.Bot, Tarang.Data.DiscordBotToken);
 
@@ -42,15 +34,17 @@ namespace TarangBot.DiscordBot
 
         private Task _client_UserLeft(SocketGuildUser arg)
         {
-            Tarang.Data.Logger.Log(arg.Username + " left");
+            Tarang.Data.MessageQueue.Dispatch("UserLeft", arg);
 
             return Task.CompletedTask;
         }
 
         private Task _client_MessageReceived(SocketMessage arg)
         {
-            Tarang.Data.Logger.Log(arg.Content);
-
+            if (arg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
+            {
+                commandHandler.Handle(arg);
+            }
             return Task.CompletedTask;
         }
 
@@ -61,37 +55,11 @@ namespace TarangBot.DiscordBot
             return Task.CompletedTask;
         }
 
-        private async Task _client_UserJoined(SocketGuildUser arg)//Move to a separate class to organize state the bot should only dispatch events
+        private Task _client_UserJoined(SocketGuildUser arg)//Move to a separate class to organize state the bot should only dispatch events
         {
             Tarang.Data.MessageQueue.Dispatch("OnUserJoin", arg);
 
-            try
-            {
-                if (usernames.Contains(arg.Username + "#" + arg.Discriminator))
-                {
-                    Tarang.Data.Logger.Log($"{arg.Username} has joined the server {arg.Guild.Name}");
-
-                    foreach (SocketRole item in arg.Guild.Roles)
-                    {
-                        if (item.Name == "Vertex")
-                        {
-                            await arg.AddRoleAsync(item);
-                            usernames.Remove(arg.Username + "#" + arg.Discriminator);
-                            return;
-                        }
-                    }
-
-                    RestRole vertex = await arg.Guild.CreateRoleAsync("Vertex", Discord.GuildPermissions.None.Modify(administrator: true), null, false, null);
-
-                    await arg.AddRoleAsync(vertex);
-                    usernames.Remove(arg.Username + "#" + arg.Discriminator);
-                    return;
-                }
-            }
-            catch (Exception)
-            {
-
-            }
+            return Task.CompletedTask;
         }
 
         public void OnDestroy()

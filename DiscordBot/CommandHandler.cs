@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using Discord;
 
 namespace TarangBot.DiscordBot
 {
@@ -29,7 +30,29 @@ namespace TarangBot.DiscordBot
 
         public void Handle(SocketMessage msg)
         {
+            string cmd_name = msg.Content.Split(' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
 
+            if (commands.ContainsKey(cmd_name))
+            {
+                ICommand cmd = (ICommand)Activator.CreateInstance(commands[cmd_name]);
+
+                cmd.HandleCommand(msg, this);
+            }
+            else
+            {
+                msg.Channel.SendMessageAsync("Command not found");
+            }
+        }
+
+
+        public string GetHelp(Type t)
+        {
+            return ((ICommand)Activator.CreateInstance(t)).HelpText();
+        }
+
+        public EmbedBuilder GetDescHelp(Type t)
+        {
+            return ((ICommand)Activator.CreateInstance(t)).DescriptiveHelpText();
         }
     }
 
@@ -39,6 +62,6 @@ namespace TarangBot.DiscordBot
 
         string HelpText();
 
-        string DescriptiveHelpText();
+        EmbedBuilder DescriptiveHelpText();
     }
 }

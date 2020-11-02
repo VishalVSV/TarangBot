@@ -12,9 +12,11 @@ namespace TarangBot
     {
         public static TarangData Data;
 
+        public static bool Stop = false;
+
         public static async Task Main()
         {
-            if(!File.Exists("./Data/config.txt"))
+            if (!File.Exists("./Data/config.txt"))
             {
                 throw new Exception("Config file not found!");
             }
@@ -52,19 +54,16 @@ namespace TarangBot
 
                 Thread.Sleep(10);
 
-                while (Console.KeyAvailable)
+                if (Stop)
                 {
-                    if(Console.ReadKey(true).Key == ConsoleKey.Escape)
-                    {
-                        Data.display.Stop();
-                        await bot;
-                        DestructionHandler.DestroyAll();
+                    Data.display.Stop();
+                    await bot;
+                    DestructionHandler.DestroyAll();
 
-                        File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented));
-                        end = true;
+                    File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, Newtonsoft.Json.Formatting.Indented));
+                    end = true;
 
-                        break;
-                    }
+                    break;
                 }
             }
         }

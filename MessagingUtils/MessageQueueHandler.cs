@@ -17,6 +17,8 @@ namespace TarangBot.MessagingUtils
         /// <param name="parameters">The parameters that the dispatcher provided</param>
         public delegate void MessageHandler(object[] parameters);
 
+        public Action<Message> OnDispatch;
+
         public void On(string EventName,MessageHandler callback)
         {
             if (events.ContainsKey(EventName))
@@ -24,14 +26,11 @@ namespace TarangBot.MessagingUtils
             else events.Add(EventName, new List<MessageHandler>() { callback });
         }
 
-        public void Dispatch(Message msg)
-        {
-            msg_queue.Enqueue(msg);
-        }
-
         public void Dispatch(string EventName,params object[] parameters)
         {
-            msg_queue.Enqueue(Message.ConstructMessage(EventName, parameters));
+            var msg = Message.ConstructMessage(EventName, parameters);
+            OnDispatch?.Invoke(msg);
+            msg_queue.Enqueue(msg);
         }
 
         public void HandleEvents()

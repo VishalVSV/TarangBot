@@ -20,6 +20,8 @@ namespace TarangBot.ConsoleDisplay
 
         private List<DisplayElement> DisplayElements = new List<DisplayElement>();
 
+        public List<ConsoleKeyInfo> Keys = new List<ConsoleKeyInfo>(5);
+
         public void RegisterElement(DisplayElement element)
         {
             DisplayElements.Add(element);
@@ -66,11 +68,25 @@ namespace TarangBot.ConsoleDisplay
 
         }
         
+        private void PollKeys()
+        {
+            Keys.Clear();
+
+            int i = 0;
+            while (Console.KeyAvailable && i < 5)
+            {
+                Keys.Add(Console.ReadKey(true));
+                i++;
+            }
+        }
+
         public void Draw()
         {
             try
             {
                 Clear();
+
+                    PollKeys();
 
                 Console.CursorVisible = false;
                 for (int i = 0; i < DisplayElements.Count; i++)
