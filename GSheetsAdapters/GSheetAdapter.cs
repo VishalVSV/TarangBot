@@ -47,7 +47,7 @@ namespace TarangBot.GSheetsAdapters
             Log($"Polling sheets file");
             try
             {
-                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A2:Z?key={API_key}");
+                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:Z?key={API_key}");
                 File.WriteAllText("./test.txt", get);
 
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);

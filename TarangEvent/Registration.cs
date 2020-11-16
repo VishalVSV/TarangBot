@@ -10,12 +10,16 @@ namespace TarangBot.TarangEvent
 
         public TeacherCoordinator TeacherCoordinator;
 
-        public List<Participant> participants = new List<Participant>();
+        public Dictionary<string, Participant> participants = new Dictionary<string, Participant>();
 
-        public Registration(string[] row)
+        public Registration(string[] rows)
         {
-            if (row.Length != 12)
-                return;
+            List<string> row = new List<string>(98);
+            row.AddRange(rows);
+            if (row.Count != 98)
+            {
+                row.Add("");
+            }
 
             School_Name = row[1];
 
@@ -26,23 +30,37 @@ namespace TarangBot.TarangEvent
 
             teacherCoordinator.email_id = row[4];
 
-            string[] events = new string[] { "Block and Tackle", "" };
+            string[] events = new string[] { "One Mic Stand", "Fort Boyard", "Two Faced", "Whose Line is it anyways", "Fandomania", "COD", "Step Up", "Trailer it up", "Synthesize", "Meme-athon", "Pixel", "Craft a Block" };
             int event_ = 0;
             int i = 5;
-            while (i < row.Length)
+            while (i < row.Count)
             {
+                Event current_event = Tarang.Data.GetEvent(events[event_]);
+
                 int num_participants = int.Parse(row[i]);
                 i++;
 
-                for (int _ = 0; _ < num_participants; _++)
-                {
-                    Participant participant = new Participant();
-                    participant.Name = row[i];
-                    participant.UserName = row[i + 1];
-                    participant.email_id = row[i + 2];
-                    participant.Role_Id = new ulong[] { 772702101482373150 };
+                int max_participants = current_event.MaxParticipants;
 
-                    participants.Add(participant);
+                for (int _ = 0; _ < max_participants; _++)
+                {
+                    if (_ < num_participants)
+                    {
+                        if (participants.ContainsKey(row[i + 1]))
+                        {
+                            participants[row[i + 1]].Registered_Events.Add(current_event);
+                        }
+                        else
+                        {
+                            Participant participant = new Participant();
+                            participant.Name = row[i];
+                            participant.UserName = row[i + 1];
+                            participant.email_id = row[i + 2];
+                            participant.Registered_Events.Add(current_event);
+
+                            participants.Add(participant.UserName, participant);
+                        }
+                    }
 
                     i += 3;
                 }
@@ -50,7 +68,7 @@ namespace TarangBot.TarangEvent
                 event_++;
             }
 
-
+            Tarang.Data.Logger.Log($"Registration with {participants.Count} participants from {School_Name} parsed!");
         }
     }
 }

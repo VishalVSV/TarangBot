@@ -20,9 +20,9 @@ namespace TarangBot.TarangEvent
             {
                 Registration registration = (Registration)new_registration[0];
 
-                for (int i = 0; i < registration.participants.Count; i++)
+                foreach (Participant participant in registration.participants.Values)
                 {
-                    UsernamesToAssign.Add(registration.participants[i].UserName, registration.participants[i]);
+                    UsernamesToAssign.Add(participant.UserName, participant);
                 }
             });
 

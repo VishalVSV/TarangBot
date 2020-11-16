@@ -6,43 +6,42 @@ using System.Text.Json.Serialization;
 
 namespace TarangBot.TarangEvent
 {
+    public enum EventType
+    {
+        Flagged,
+        Non_Flagged,
+        Sub
+    }
 
-
-    public abstract class Event
+    public class Event
     {
         //Help text
-        public abstract string SmallHelpText { get; }
-        public abstract string DescriptiveHelpText { get; } //Rules
+        public string SmallHelpText;
+        public string DescriptiveHelpText;//Rules
 
-        //Disc.NET Attrs
-        //Get Back to this when Server Structure is figured out
-        //public abstract ulong[] channels { get; }
-        //public abstract var ChannelConfig { get; } //Depending on format of config => Assuming JSON
-        //Event Attrs
+        public string[] Names;
 
         //Optionals
-        public virtual bool isFlagged { get; } = false;
-        public virtual bool isTeam { get; } = false;
+        public EventType eventType;
+        public bool isTeam  = false;
 
         //Must Set
-        public abstract int MaxParticipants { get; }
-        public abstract DateTime[] EventDates { get; }
+        public int MaxParticipants;
+        public bool IsTwoDays;
 
+        public ulong Role_Id = 0;
+
+        public Event(string SmallHelpText,string DescHelpText,string[] names,bool IsTwoDays,int MaxParticipants,EventType eventType,bool isTeam)
+        {
+            this.SmallHelpText = SmallHelpText;
+            DescriptiveHelpText = DescHelpText;
+            this.IsTwoDays = IsTwoDays;
+            this.MaxParticipants = MaxParticipants;
+            this.eventType = eventType;
+            this.isTeam = isTeam;
+
+            Names = names;
+        }
     }
 
-    public class Template : Event
-    {
-        public override string SmallHelpText { get; } = "Test";
-        public override string DescriptiveHelpText { get; } = "Big Text";
-
-        public override bool isFlagged { get; } = true;
-        public override int MaxParticipants { get; } = 2;
-
-        public override DateTime[] EventDates { get; } = new DateTime[]{
-            new DateTime(2020,12,4),
-            new DateTime(2020,12,5)
-        };
-
-        //public override ulong[] channels => throw new NotImplementedException();
-    }
 }

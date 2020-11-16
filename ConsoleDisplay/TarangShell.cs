@@ -71,6 +71,7 @@ namespace TarangBot.ConsoleDisplay
             }
             else if (cmd.Trim() == "resize")
             {
+                Tarang.Data.Resize();
                 Tarang.Data.display.Resize();
             }
         }

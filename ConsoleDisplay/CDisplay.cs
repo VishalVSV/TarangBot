@@ -32,7 +32,7 @@ namespace TarangBot.ConsoleDisplay
         public void Resize()
         {
             Width = Console.WindowWidth;
-            Height = Console.WindowHeight;
+            Height = Console.WindowHeight - 1;
             buffer = new StringBuilder(Width * Height);
             for (int i = 0; i < Width * Height; i++)
             {
@@ -97,11 +97,15 @@ namespace TarangBot.ConsoleDisplay
 
                     if (DisplayElements[i].Outline)
                     {
-                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, '▒');
-                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, '▒');
-                        SSDrawLine(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
-                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '▒');
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, '│');//Left edge
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, '─');//Top edge
+                        SSDrawLine(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '│');//Right edge
+                        SSDrawLine(DisplayElements[i].Left - 1, DisplayElements[i].Top + DisplayElements[i].Height + 1, DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '─');//Bottom edge
 
+                        SSDrawPixel(DisplayElements[i].Left - 1, DisplayElements[i].Top - 1, '+');
+                        SSDrawPixel(DisplayElements[i].Left - 1, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '+');
+                        SSDrawPixel(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top + 1 + DisplayElements[i].Height, '+');
+                        SSDrawPixel(DisplayElements[i].Left + 1 + DisplayElements[i].Width, DisplayElements[i].Top - 1, '+');
                     }
                 }
 

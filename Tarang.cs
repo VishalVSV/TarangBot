@@ -47,7 +47,6 @@ namespace TarangBot
             
             Data.roleGiver.Init();
 
-            Data.roleGiver = new RegistrationRoleGiver();
             while (!end)
             {
                 if ((DateTime.Now - last_sheet_poll) > Data.SheetPollInterval)
@@ -71,6 +70,8 @@ namespace TarangBot
 
                     File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, settings));
                     end = true;
+
+                    Console.Clear();
 
                     break;
                 }

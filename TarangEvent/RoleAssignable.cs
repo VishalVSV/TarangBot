@@ -9,9 +9,9 @@ namespace TarangBot.TarangEvent
     {
         public ulong User_Id;
         public ulong[] Role_Id;
-        public ulong Guild_Id;
+        public ulong Guild_Id = 771986800083337216;
 
-        public List<SocketRole> GetRoles()
+        public virtual List<SocketRole> GetRoles()
         {
             List<SocketRole> roles = new List<SocketRole>();
             for (int i = 0; i < Role_Id.Length; i++)
