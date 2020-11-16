@@ -37,7 +37,10 @@ namespace TarangBot.TarangEvent
             {
                 Event current_event = Tarang.Data.GetEvent(events[event_]);
 
-                int num_participants = int.Parse(row[i]);
+                int num_participants;
+
+                if (!int.TryParse(rows[i], out num_participants)) num_participants = 0;
+
                 i++;
 
                 int max_participants = current_event.MaxParticipants;
@@ -55,7 +58,7 @@ namespace TarangBot.TarangEvent
                             Participant participant = new Participant();
                             participant.Name = row[i];
                             participant.UserName = row[i + 1];
-                            participant.email_id = row[i + 2];
+                            participant.PhoneNumber = row[i + 2];
                             participant.Registered_Events.Add(current_event);
 
                             participants.Add(participant.UserName, participant);

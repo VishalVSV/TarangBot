@@ -56,6 +56,12 @@ namespace TarangBot.DiscordBot
         }
     }
 
+    [AttributeUsage(AttributeTargets.Class)]
+    public class NoHelp : Attribute
+    {
+
+    }
+
     public interface ICommand
     {
         Task HandleCommand(SocketMessage msg,CommandHandler commandHandler);

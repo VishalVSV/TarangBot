@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Discord;
@@ -44,7 +45,8 @@ namespace TarangBot.DiscordBot.Commands
                 StringBuilder cmds = new StringBuilder();
                 foreach (string cmd_str in cmd.commands.Keys)
                 {
-                    cmds.AppendLine($"`{Tarang.Data.DiscordBotPrefix}{cmd_str}` - { cmd.GetHelp(cmd.commands[cmd_str]) }");
+                    if (cmd.commands[cmd_str].GetCustomAttribute<NoHelp>() == null)
+                        cmds.AppendLine($"`{Tarang.Data.DiscordBotPrefix}{cmd_str}` - { cmd.GetHelp(cmd.commands[cmd_str]) }");
                 }
 
                 builder.AddField("Commands", cmds.ToString());
@@ -54,12 +56,20 @@ namespace TarangBot.DiscordBot.Commands
             else
             {
                 string cmd_name = msg.Content.Split(' ')[1];
+
+                if(cmd_name.ToLower() == "me")
+                {
+                    await msg.Channel.SendMessageAsync("No one can...");
+                }
                 if (cmd.commands.ContainsKey(cmd_name))
                 {
-                    EmbedBuilder help = cmd.GetDescHelp(cmd.commands[cmd_name]);
-                    help.WithTitle("Help");
+                    if (cmd.commands[cmd_name].GetCustomAttribute<NoHelp>() == null)
+                    {
+                        EmbedBuilder help = cmd.GetDescHelp(cmd.commands[cmd_name]);
+                        help.WithTitle("Help");
 
-                    await msg.Channel.SendMessageAsync(null, false, help.Build());
+                        await msg.Channel.SendMessageAsync(null, false, help.Build());
+                    }
                 }
                 else
                 {

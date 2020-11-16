@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ namespace TarangBot.DiscordBot
         [JsonIgnore]
         public DiscordSocketClient _client;
 
+        [JsonIgnore]
         public CommandHandler commandHandler = new CommandHandler("TarangBot.DiscordBot.Commands");
 
         public async Task Start()
@@ -33,11 +35,44 @@ namespace TarangBot.DiscordBot
 
         }
 
-        private Task _client_Ready()
+        public Embed ConstructDashboard()
         {
-            _client.SetGameAsync("Tarang 2020");
+            EmbedBuilder builder = new EmbedBuilder();
 
-            return Task.CompletedTask;
+            builder.WithTitle("Tarang Bot Dashboard");
+
+            builder.AddField("Registrations:", Tarang.Data.sheetAdapter.ProcessedRecords);
+
+            return builder.Build();
+        }
+
+        public async Task UpdateDashboard()
+        {
+            try
+            {
+                await ((await _client.GetGuild(Tarang.Data.GuildId).GetTextChannel(Tarang.Data.DashboardChannel).GetMessageAsync(Tarang.Data.DashboardMessageId)) as SocketUserMessage).ModifyAsync((msg) =>
+                {
+                    msg.Embed = ConstructDashboard();
+                });
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private async Task _client_Ready()
+        {
+            Game game = new Game("Tarang 2020", ActivityType.Playing, ActivityProperties.Instance);
+
+            await _client.SetActivityAsync(game);
+
+            Tarang.Data.MessageQueue.On("NewRegistration", async (o) =>
+              {
+                  await UpdateDashboard();
+              });
+
+            await UpdateDashboard();
         }
 
         private Task _client_UserLeft(SocketGuildUser arg)

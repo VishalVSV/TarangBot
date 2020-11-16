@@ -17,6 +17,8 @@ namespace TarangBot.GeneralUtils
         [JsonIgnore]
         public CDisplay display = new CDisplay();
 
+        public ulong GuildId = 771986800083337216;
+
         [JsonIgnore]
         public ScrollingLogger Logger = new ScrollingLogger(1, 1, Console.WindowWidth - 3, (Console.WindowHeight / 2) - 2);
         [JsonIgnore]
@@ -40,10 +42,14 @@ namespace TarangBot.GeneralUtils
         public List<Event> raw_events = new List<Event>();
         public bool Events_Init = false;
 
+        public ulong DashboardMessageId = 0;
+        public ulong DashboardChannel = 0;
+
         [JsonIgnore]
         public Dictionary<string, Event> Events = new Dictionary<string, Event>();
 
         //Credit to Tbone1983 - https://www.codeproject.com/Questions/419563/Get-the-nearest-Match-of-the-string-in-list-of-str
+        //Levenshtein Distance modified to be case insensitive
         private static int LevenshteinDistance(string s,string t)
         {
             int n = s.Length;
@@ -76,13 +82,17 @@ namespace TarangBot.GeneralUtils
                 //Step 4
                 for (int j = 1; j <= m; j++)
                 {
-                    // Step 5
-                    int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
-
-                    // Step 6
-                    d[i, j] = Math.Min(
-                        Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                        d[i - 1, j - 1] + cost);
+                    if(char.ToLower(s[i - 1]) == char.ToLower(t[j - 1]))
+                    {
+                        d[i, j] = d[i - 1, j - 1];
+                    }
+                    else
+                    {
+                        d[i, j] =
+                            Math.Min(d[i - 1, j] + 1,    // Deletion
+                            Math.Min(d[i, j - 1] + 1,    // Insertion
+                            d[i - 1, j - 1] + 1));       // Substitution
+                    }
                 }
             }
             // Step 7
@@ -102,6 +112,31 @@ namespace TarangBot.GeneralUtils
                 if (t[_].Item2 < min)
                 {
                     i = t[_].s;
+                    min = t[_].Item2;
+                }
+            }
+
+            event_ = Events[i];
+
+            return event_;
+        }
+
+        public Event GetEvent(string name,out int Distance)
+        {
+            Event event_ = null;
+
+            Distance = 0;
+
+            var t = Events.Keys.Select(s => (s, LevenshteinDistance(name, s))).ToList();
+
+            string i = "";
+            int min = int.MaxValue;
+            for (int _ = 0; _ < t.Count; _++)
+            {
+                if (t[_].Item2 < min)
+                {
+                    i = t[_].s;
+                    Distance = t[_].Item2;
                     min = t[_].Item2;
                 }
             }

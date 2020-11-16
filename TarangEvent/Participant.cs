@@ -18,9 +18,9 @@ namespace TarangBot.TarangEvent
         public string UserName;
 
         /// <summary>
-        /// Their email id
+        /// Their phone number
         /// </summary>
-        public string email_id;
+        public string PhoneNumber;
 
         public List<Event> Registered_Events = new List<Event>(2);
 

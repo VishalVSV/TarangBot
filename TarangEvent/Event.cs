@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Discord.WebSocket;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace TarangBot.TarangEvent
 {
@@ -30,6 +30,16 @@ namespace TarangBot.TarangEvent
         public bool IsTwoDays;
 
         public ulong Role_Id = 0;
+        public ulong WaitingRoomId = 0;
+
+        [JsonIgnore]
+        public SocketVoiceChannel WaitingVC
+        {
+            get
+            {
+                return Tarang.Data.TarangBot._client.GetGuild(Tarang.Data.GuildId).GetVoiceChannel(WaitingRoomId);
+            }
+        }
 
         public Event(string SmallHelpText,string DescHelpText,string[] names,bool IsTwoDays,int MaxParticipants,EventType eventType,bool isTeam)
         {
