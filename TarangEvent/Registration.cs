@@ -23,12 +23,13 @@ namespace TarangBot.TarangEvent
 
             School_Name = row[1];
 
-            TeacherCoordinator teacherCoordinator = new TeacherCoordinator();
-            teacherCoordinator.School_Name = School_Name;
-            teacherCoordinator.Name = row[2];
-            teacherCoordinator.UserName = row[3];
+            TeacherCoordinator = new TeacherCoordinator();
 
-            teacherCoordinator.email_id = row[4];
+            TeacherCoordinator.School_Name = School_Name;
+            TeacherCoordinator.Name = row[2];
+            TeacherCoordinator.UserName = row[3];
+
+            TeacherCoordinator.email_id = row[4];
 
             string[] events = new string[] { "One Mic Stand", "Fort Boyard", "Two Faced", "Whose Line is it anyways", "Fandomania", "COD", "Step Up", "Trailer it up", "Synthesize", "Meme-athon", "Pixel", "Craft a Block" };
             int event_ = 0;

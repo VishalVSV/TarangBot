@@ -12,6 +12,9 @@ namespace TarangBot.ConsoleDisplay
 
         public bool Save = true;
 
+        //TODO: Add title bar to scrolling logger so that polling can be a status rather than a log
+        public string Title = "";
+
         public ScrollingLogger(int x, int y, int width, int height)
         {
             Left = x;

@@ -44,7 +44,6 @@ namespace TarangBot.GSheetsAdapters
         public async Task Poll()
         {
             DateTime tp = DateTime.Now;
-            Log($"Polling sheets file");
             try
             {
                 string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:Z?key={API_key}");
@@ -73,7 +72,6 @@ namespace TarangBot.GSheetsAdapters
 
                 await Tarang.Data.TarangBot.UpdateDashboard();
             }
-            Log?.Invoke($"Polling took {(DateTime.Now - tp).TotalMilliseconds} ms");
         }
     }
 }

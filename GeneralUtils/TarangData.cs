@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using TarangBot.TarangEvent;
 using TarangBot.DiscordBot;
 using System.Linq;
+using TarangBot.MailIntegration;
 
 namespace TarangBot.GeneralUtils
 {
@@ -53,7 +54,7 @@ namespace TarangBot.GeneralUtils
         public GSheetAdapter sheetAdapter;
         public string DiscordBotToken = "";
         public string DiscordBotPrefix = "-";
-        
+
         public List<Event> raw_events = new List<Event>();
         public bool Events_Init = false;
 
@@ -61,6 +62,9 @@ namespace TarangBot.GeneralUtils
         public ulong DashboardChannel = 0;
         public ulong BotMessagesChannel = 0;
         public ulong AnnouncementChannel = 0;
+
+        public string MailUsername = "";
+        public string MailPassword = "";
 
         public string LastError = "";
 
@@ -71,7 +75,7 @@ namespace TarangBot.GeneralUtils
 
         //Credit to Tbone1983 - https://www.codeproject.com/Questions/419563/Get-the-nearest-Match-of-the-string-in-list-of-str
         //Levenshtein Distance modified to be case insensitive
-        private static int LevenshteinDistance(string s,string t)
+        private static int LevenshteinDistance(string s, string t)
         {
             int n = s.Length;
             int m = t.Length;
@@ -103,7 +107,7 @@ namespace TarangBot.GeneralUtils
                 //Step 4
                 for (int j = 1; j <= m; j++)
                 {
-                    if(char.ToLower(s[i - 1]) == char.ToLower(t[j - 1]))
+                    if (char.ToLower(s[i - 1]) == char.ToLower(t[j - 1]))
                     {
                         d[i, j] = d[i - 1, j - 1];
                     }
@@ -153,7 +157,7 @@ namespace TarangBot.GeneralUtils
             return null;
         }
 
-        public Event GetEvent(string name,out int Distance)
+        public Event GetEvent(string name, out int Distance)
         {
             Event event_ = null;
 
@@ -176,6 +180,17 @@ namespace TarangBot.GeneralUtils
             event_ = Events[i];
 
             return event_;
+        }
+
+        public Participant GetParticipant(string username)
+        {
+            foreach (Participant participant in participants)
+            {
+                if (participant.UserName == username)
+                    return participant;
+            }
+
+            return null;
         }
 
         public void SendDiscordLog(string s)
@@ -203,20 +218,20 @@ namespace TarangBot.GeneralUtils
         {
             if (!Events_Init)
             {
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "One Mic Stand" },          true, 1, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fort Boyard" },            true, 3, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Two Faced" },              true, 2, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Whose Line is it anyway" },true, 2, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fandomania" },             true, 1, EventType.Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "One Mic Stand" }, true, 1, EventType.Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fort Boyard" }, true, 3, EventType.Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Two Faced" }, true, 2, EventType.Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Whose Line is it anyway" }, true, 2, EventType.Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fandomania" }, true, 1, EventType.Flagged, false));
 
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "COD" },                    true, 6, EventType.Non_Flagged, true));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Step Up" },                true, 2, EventType.Non_Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Trailer it up" },          true, 2, EventType.Non_Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Synthesize" },             true, 2, EventType.Non_Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "COD" }, true, 6, EventType.Non_Flagged, true));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Step Up" }, true, 2, EventType.Non_Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Trailer it up" }, true, 2, EventType.Non_Flagged, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Synthesize" }, true, 2, EventType.Non_Flagged, false));
 
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Meme-athon" },             true, 2, EventType.Sub, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Pixel" },                  true, 2, EventType.Sub, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Craft a Block" },          true, 2, EventType.Sub, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Meme-athon" }, true, 2, EventType.Sub, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Pixel" }, true, 2, EventType.Sub, false));
+                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Craft a Block" }, true, 2, EventType.Sub, false));
 
                 Events_Init = true;
             }
@@ -251,6 +266,7 @@ namespace TarangBot.GeneralUtils
 
             DestructionHandler.RegisterDestructible(TarangBot);
 
+            GmailDaemon.SetCredentials(MailUsername, Encoding.UTF8.GetString(Convert.FromBase64String(MailPassword)));
         }
 
         public void Resize()

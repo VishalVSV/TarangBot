@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using TarangBot.MailIntegration;
+using System.IO;
 
 namespace TarangBot.TarangEvent
 {
@@ -20,6 +22,8 @@ namespace TarangBot.TarangEvent
             {
                 Registration registration = (Registration)new_registration[0];
 
+                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite",File.ReadAllText("./InviteMail.html").Replace("$--link--$", "https://discord.gg/kgMVXuDd9E"),true);
+
                 foreach (Participant participant in registration.participants.Values)
                 {
                     UsernamesToAssign.Add(participant.UserName, participant);
@@ -34,6 +38,14 @@ namespace TarangBot.TarangEvent
                 if (UsernamesToAssign.ContainsKey(user))
                 {
                     UsernamesToAssign[user].Guild_Id = arg.Guild.Id;
+
+                    //Welcome messages?
+                    for (int i = 0; i < UsernamesToAssign[user].Registered_Events.Count; i++)
+                    {
+                        Event @event = Tarang.Data.GetEventById(UsernamesToAssign[user].Registered_Events[i]);
+
+                        await (Tarang.Data.TarangBot._client.GetChannel(@event.TextChannel) as SocketTextChannel).SendMessageAsync($"Welcome to {@event.Names[0]}, {UsernamesToAssign[user].Name}");
+                    }
 
                     await arg.AddRolesAsync(UsernamesToAssign[user].GetRoles());
                 }

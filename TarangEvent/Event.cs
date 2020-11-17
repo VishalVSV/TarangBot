@@ -33,6 +33,7 @@ namespace TarangBot.TarangEvent
 
         public ulong Role_Id = 0;
         public ulong WaitingRoomId = 0;
+        public ulong TextChannel = 0;
 
         [JsonIgnore]
         public SocketVoiceChannel WaitingVC
