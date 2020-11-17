@@ -51,7 +51,7 @@ namespace TarangBot.TarangEvent
                     {
                         if (participants.ContainsKey(row[i + 1]))
                         {
-                            participants[row[i + 1]].Registered_Events.Add(current_event);
+                            participants[row[i + 1]].Registered_Events.Add(current_event.internal_id);
                         }
                         else
                         {
@@ -59,7 +59,7 @@ namespace TarangBot.TarangEvent
                             participant.Name = row[i];
                             participant.UserName = row[i + 1];
                             participant.PhoneNumber = row[i + 2];
-                            participant.Registered_Events.Add(current_event);
+                            participant.Registered_Events.Add(current_event.internal_id);
 
                             participants.Add(participant.UserName, participant);
                         }

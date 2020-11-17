@@ -67,7 +67,11 @@ namespace TarangBot.GSheetsAdapters
             }
             catch (Exception e)
             {
-                Log(e.Message);
+                Log("Poll failed because of \"" + e.Message + "\"");
+                Tarang.Data.SendDiscordLog("Poll failed because of \"" + e.Message + "\"");
+                Tarang.Data.LastError = "@GSheet integration: [" + e.Message + "]";
+
+                await Tarang.Data.TarangBot.UpdateDashboard();
             }
             Log?.Invoke($"Polling took {(DateTime.Now - tp).TotalMilliseconds} ms");
         }

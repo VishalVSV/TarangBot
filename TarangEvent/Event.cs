@@ -19,6 +19,8 @@ namespace TarangBot.TarangEvent
         public string SmallHelpText;
         public string DescriptiveHelpText;//Rules
 
+        public string internal_id = "";
+
         public string[] Names;
 
         //Optionals

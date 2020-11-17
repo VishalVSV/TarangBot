@@ -28,7 +28,7 @@ namespace TarangBot.DiscordBot
             _client.MessageReceived += _client_MessageReceived;
             _client.Ready += _client_Ready;
 
-            await _client.LoginAsync(Discord.TokenType.Bot, Tarang.Data.DiscordBotToken);
+            await _client.LoginAsync(TokenType.Bot, Tarang.Data.DiscordBotToken);
 
             await _client.StartAsync();
 
@@ -41,7 +41,16 @@ namespace TarangBot.DiscordBot
 
             builder.WithTitle("Tarang Bot Dashboard");
 
+            string err = Tarang.Data.LastError;
+            if (string.IsNullOrEmpty(err)) err = "No errors so far!";
+
             builder.AddField("Registrations:", Tarang.Data.sheetAdapter.ProcessedRecords);
+            builder.AddField("Last Error:", err);
+            builder.AddField("Total number of participants:", Tarang.Data.participants.Count);
+
+            builder.AddField("Status", Tarang.Stop ? "Offline" : "Online");
+
+            builder.Color = Color.Red;
 
             return builder.Build();
         }
@@ -50,14 +59,15 @@ namespace TarangBot.DiscordBot
         {
             try
             {
-                await ((await _client.GetGuild(Tarang.Data.GuildId).GetTextChannel(Tarang.Data.DashboardChannel).GetMessageAsync(Tarang.Data.DashboardMessageId)) as SocketUserMessage).ModifyAsync((msg) =>
+                var a = _client.GetGuild(Tarang.Data.GuildId).GetTextChannel(Tarang.Data.DashboardChannel);
+                var m = (await a.GetMessageAsync(Tarang.Data.DashboardMessageId)) as RestUserMessage;
+                await (m).ModifyAsync((msg) =>
                 {
                     msg.Embed = ConstructDashboard();
                 });
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -87,6 +97,18 @@ namespace TarangBot.DiscordBot
             if (arg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
             {
                 commandHandler.Handle(arg);
+            }
+            else
+            {
+                string content = arg.Content.Trim();
+                if (content.StartsWith($"<@{_client.CurrentUser.Id}>"))
+                {
+                    string msg = content.Substring($"<@{_client.CurrentUser.Id}>".Length).ToLower();
+                    if (msg == "hey")
+                    {
+                        arg.Channel.SendMessageAsync($"Hey <@{arg.Author.Id}>");
+                    }
+                }
             }
             return Task.CompletedTask;
         }

@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,7 +23,7 @@ namespace TarangBot.TarangEvent
         /// </summary>
         public string PhoneNumber;
 
-        public List<Event> Registered_Events = new List<Event>(2);
+        public List<string> Registered_Events = new List<string>(2);
 
         /// <summary> 
         /// Their School Name
@@ -31,6 +32,7 @@ namespace TarangBot.TarangEvent
 
         //TODO: Constructor for participants and implementation for Teacher Coordinator
 
+        [JsonIgnore]
         public ulong[] Role_Ids
         {
             get
@@ -38,7 +40,7 @@ namespace TarangBot.TarangEvent
                 ulong[] Roles = new ulong[Registered_Events.Count];
                 for (int i = 0; i < Roles.Length; i++)
                 {
-                    Roles[i] = Registered_Events[i].Role_Id;
+                    Roles[i] = Tarang.Data.GetEventById(Registered_Events[i]).Role_Id;
                 }
                 return Roles;
             }

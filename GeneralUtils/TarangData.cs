@@ -17,6 +17,7 @@ namespace TarangBot.GeneralUtils
         [JsonIgnore]
         public CDisplay display = new CDisplay();
 
+        //Hardcoded value for TARANG Server
         public ulong GuildId = 771986800083337216;
 
         [JsonIgnore]
@@ -26,14 +27,28 @@ namespace TarangBot.GeneralUtils
         [JsonIgnore]
         public TarangShell Shell = new TarangShell(Console.WindowWidth / 2 + 1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 2, Console.WindowHeight / 2 - 3);
 
+        //Unused
         public List<PollSystem> PollSystem = new List<PollSystem>();
 
+        /// <summary>
+        /// The message handling queue system instance
+        /// </summary>
         [JsonIgnore]
         public MessageQueueHandler MessageQueue = new MessageQueueHandler();
+
+        /// <summary>
+        /// The discord bot class
+        /// </summary>
         public Tarangbot TarangBot;
 
+        /// <summary>
+        /// Role giving system instance
+        /// </summary>
         public RegistrationRoleGiver roleGiver;
 
+        /// <summary>
+        /// The interval between subsequent attempts to poll the registration sheets file
+        /// </summary>
         public TimeSpan SheetPollInterval = TimeSpan.FromSeconds(5);
         public GSheetAdapter sheetAdapter;
         public string DiscordBotToken = "";
@@ -44,6 +59,11 @@ namespace TarangBot.GeneralUtils
 
         public ulong DashboardMessageId = 0;
         public ulong DashboardChannel = 0;
+        public ulong BotMessagesChannel = 0;
+
+        public string LastError = "";
+
+        public HashSet<Participant> participants = new HashSet<Participant>();
 
         [JsonIgnore]
         public Dictionary<string, Event> Events = new Dictionary<string, Event>();
@@ -121,6 +141,17 @@ namespace TarangBot.GeneralUtils
             return event_;
         }
 
+        public Event GetEventById(string id)
+        {
+            for (int i = 0; i < raw_events.Count; i++)
+            {
+                if (raw_events[i].internal_id == id)
+                    return raw_events[i];
+            }
+
+            return null;
+        }
+
         public Event GetEvent(string name,out int Distance)
         {
             Event event_ = null;
@@ -144,6 +175,27 @@ namespace TarangBot.GeneralUtils
             event_ = Events[i];
 
             return event_;
+        }
+
+        public void SendDiscordLog(string s)
+        {
+            (TarangBot._client.GetGuild(GuildId).GetTextChannel(BotMessagesChannel)).SendMessageAsync(s);
+        }
+
+        [JsonIgnore]
+        private Random random = new Random(0);
+        public string IdChars = "abcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()";
+
+        public string GetRandomId(int len = 5)
+        {
+            string s = "";
+
+            for (int i = 0; i < len; i++)
+            {
+                s += IdChars[random.Next(0, IdChars.Length)];
+            }
+
+            return s;
         }
 
         public void Init()

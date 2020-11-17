@@ -42,7 +42,6 @@ namespace TarangBot
             Data.sheetAdapter.Log = Data.Logger.Log;
 
             DateTime last_sheet_poll = DateTime.Now;
-            last_sheet_poll = last_sheet_poll.Subtract(TimeSpan.FromSeconds(10));
             bool end = false;
             
             Data.roleGiver.Init();
@@ -61,7 +60,10 @@ namespace TarangBot
 
                 if (Stop)
                 {
+                    await Data.TarangBot.UpdateDashboard();
+
                     Data.display.Stop();
+                    
                     await bot;
                     DestructionHandler.DestroyAll();
 

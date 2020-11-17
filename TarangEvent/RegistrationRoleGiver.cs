@@ -23,6 +23,7 @@ namespace TarangBot.TarangEvent
                 foreach (Participant participant in registration.participants.Values)
                 {
                     UsernamesToAssign.Add(participant.UserName, participant);
+                    Tarang.Data.participants.Add(participant);
                 }
             });
 
