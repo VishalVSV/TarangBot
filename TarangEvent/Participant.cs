@@ -29,9 +29,7 @@ namespace TarangBot.TarangEvent
         /// Their School Name
         /// </summary>
         public string School_Name;
-
-        //TODO: Constructor for participants and implementation for Teacher Coordinator
-
+        
         [JsonIgnore]
         public ulong[] Role_Ids
         {

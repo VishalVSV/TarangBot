@@ -50,7 +50,12 @@ namespace TarangBot.DiscordBot
 
             builder.AddField("Status", Tarang.Stop ? "Offline" : "Online");
 
-            builder.Color = Color.Red;
+            if (Tarang.Stop)
+                builder.Color = Color.Red;
+            else builder.Color = Color.Green;
+
+            if (Tarang.Data.LastError != "")
+                builder.Color = new Color(64, 224, 208);
 
             return builder.Build();
         }

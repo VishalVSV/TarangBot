@@ -21,7 +21,7 @@ namespace TarangBot.DiscordBot
 
             for (int i = 0; i < types.Length; i++)
             {
-                if(ICommandType.IsAssignableFrom(types[i]))
+                if (ICommandType.IsAssignableFrom(types[i]))
                 {
                     commands.Add(types[i].Name.ToLower(), types[i]);
                 }
@@ -30,7 +30,10 @@ namespace TarangBot.DiscordBot
 
         public void Handle(SocketMessage msg)
         {
-            string cmd_name = msg.Content.Split(' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
+            if (msg.Author.IsBot)
+                return;
+
+            string cmd_name = msg.Content.Split('\n', ' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
 
             if (commands.ContainsKey(cmd_name))
             {
@@ -64,7 +67,7 @@ namespace TarangBot.DiscordBot
 
     public interface ICommand
     {
-        Task HandleCommand(SocketMessage msg,CommandHandler commandHandler);
+        Task HandleCommand(SocketMessage msg, CommandHandler commandHandler);
 
         string HelpText();
 

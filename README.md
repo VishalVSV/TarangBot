@@ -7,4 +7,4 @@ The discord bot written for PSBB Millennium GBKM's cultural event Tarang.
 2. Gmail integration for server invite
 3. Welcome message on event channels
 4. #announcements rules annoucement
-5. Echo announcement command
+5. Echo announcement command - DONE

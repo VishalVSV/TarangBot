@@ -17,6 +17,9 @@ namespace TarangBot.DiscordBot.Commands
 
         public async Task HandleCommand(SocketMessage msg, CommandHandler commandHandler)
         {
+            if (!(msg.Author as SocketGuildUser).GuildPermissions.Administrator)
+                return;
+
             Tarang.Data.LastError = "";
             await msg.Channel.SendMessageAsync("Last error marked as resolved");
             await Tarang.Data.TarangBot.UpdateDashboard();

@@ -67,6 +67,7 @@ namespace TarangBot.ConsoleDisplay
             Log(cmd);
             if (cmd.Trim() == "stop")
             {
+                Tarang.Data.Logger.Log("Stopping");
                 Tarang.Stop = true;
             }
             else if (cmd.Trim() == "resize")

@@ -60,6 +60,7 @@ namespace TarangBot.GeneralUtils
         public ulong DashboardMessageId = 0;
         public ulong DashboardChannel = 0;
         public ulong BotMessagesChannel = 0;
+        public ulong AnnouncementChannel = 0;
 
         public string LastError = "";
 
