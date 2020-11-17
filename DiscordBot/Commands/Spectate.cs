@@ -13,6 +13,12 @@ namespace TarangBot.DiscordBot.Commands
 
         public async Task HandleCommand(SocketMessage msg, CommandHandler commandHandler)
         {
+            if((msg.Author as SocketGuildUser).VoiceChannel == null)
+            {
+                await msg.Channel.SendMessageAsync($"Join Spectator Lobby VC first then run the spectate command");
+                return;
+            }
+
             string event_name = msg.Content.Substring(Tarang.Data.DiscordBotPrefix.Length + "spectate".Length).Trim();
 
             int edits;
