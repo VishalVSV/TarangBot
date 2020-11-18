@@ -22,7 +22,9 @@ namespace TarangBot.GeneralUtils
         public ulong GuildId = 771986800083337216;
 
         [JsonIgnore]
-        public ScrollingLogger Logger = new ScrollingLogger(1, 1, Console.WindowWidth - 3, (Console.WindowHeight / 2) - 2);
+        public ScrollingLogger Logger = new ScrollingLogger(1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
+        [JsonIgnore]
+        public StatusDisplay StatusDisp = new StatusDisplay(Console.WindowWidth / 2 + 1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
         [JsonIgnore]
         public ScrollingLogger QueueLog = new ScrollingLogger(1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 2, Console.WindowHeight / 2 - 3);
         [JsonIgnore]
@@ -254,15 +256,15 @@ namespace TarangBot.GeneralUtils
             display.RegisterElement(Logger);
             display.RegisterElement(QueueLog);
             display.RegisterElement(Shell);
+            display.RegisterElement(StatusDisp);
 
             for (int i = 0; i < PollSystem.Count; i++)
             {
                 PollSystem[i].Init();
             }
-
+            
             DestructionHandler.RegisterDestructible(Logger);
             DestructionHandler.RegisterDestructible(QueueLog);
-
 
             DestructionHandler.RegisterDestructible(TarangBot);
 
@@ -288,6 +290,12 @@ namespace TarangBot.GeneralUtils
             Shell.Top = (Console.WindowHeight / 2) + 1;
             Shell.Width = Console.WindowWidth / 2 - 2;
             Shell.Height = Console.WindowHeight / 2 - 3;
+
+            //StatusDisp = new StatusDisplay(Console.WindowWidth / 2 + 1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
+            StatusDisp.Left = Console.WindowWidth / 2 + 1;
+            StatusDisp.Top = 1;
+            StatusDisp.Width = Console.WindowWidth / 2 - 2;
+            StatusDisp.Height = (Console.WindowHeight / 2) - 2;
         }
 
         public static TarangData Load(string path)

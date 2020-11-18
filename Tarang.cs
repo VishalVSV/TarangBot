@@ -15,8 +15,12 @@ namespace TarangBot
 
         public static bool Stop = false;
 
+        public static TimeSpan AvgLoopTimeUpdateInterval = TimeSpan.FromSeconds(5);
+
         public static async Task Main()
         {
+            DateTime StartTime = DateTime.Now;
+
             if (!File.Exists("./Data/config.txt"))
             {
                 throw new Exception("Config file not found!");
@@ -46,12 +50,24 @@ namespace TarangBot
             
             Data.roleGiver.Init();
 
+            double avg_time = 0;
+
+            DateTime last_time_update = DateTime.Now;
+
             while (!end)
             {
+                DateTime tp = DateTime.Now;
                 if ((DateTime.Now - last_sheet_poll) > Data.SheetPollInterval)
                 {
                     await Data.sheetAdapter.Poll();
                     last_sheet_poll = DateTime.Now;
+                }
+                if((DateTime.Now - last_time_update) > AvgLoopTimeUpdateInterval)
+                {
+                    Data.StatusDisp["Average loop time"] = Math.Round(avg_time,2).ToString() + "ms";
+                    var t = (DateTime.Now - StartTime);
+                    Data.StatusDisp["Uptime"] = $"{t.Days} Days {t.Hours} hrs {t.Minutes} mins";
+                    last_time_update = DateTime.Now;
                 }
 
                 Data.MessageQueue.HandleEvents();
@@ -77,6 +93,8 @@ namespace TarangBot
 
                     break;
                 }
+
+                avg_time = (avg_time + (DateTime.Now - tp).TotalMilliseconds) / 2;
             }
         }
     }

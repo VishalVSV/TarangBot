@@ -29,7 +29,7 @@ namespace TarangBot.DiscordBot.Commands
                 SocketVoiceChannel WaitingRoomVC = event_.WaitingVC;
                 if (WaitingRoomVC != null)
                 {
-                    await msg.Channel.SendMessageAsync($"Moving {(string.IsNullOrEmpty((msg.Author as SocketGuildUser).Nickname) ? msg.Author.Username : (msg.Author as SocketGuildUser).Nickname)} to {WaitingRoomVC.Name}");
+                    await msg.Channel.SendMessageAsync($"Moving {(string.IsNullOrEmpty((msg.Author as SocketGuildUser).Nickname) ? msg.Author.Username : (msg.Author as SocketGuildUser).Nickname)} to {event_.Names[0]}");
                     await (msg.Author as SocketGuildUser).ModifyAsync((a) =>
                     {
                         a.Channel = WaitingRoomVC;
