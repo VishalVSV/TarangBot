@@ -48,8 +48,8 @@ namespace TarangBot.GSheetsAdapters
             try
             {
                 string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:CT?key={API_key}");
-                Tarang.Data.StatusDisp["Poll Status"] = $"Last Poll took {(DateTime.Now - tp).TotalMilliseconds}ms";
-                
+                Tarang.Data.StatusDisp["Poll Status"] = $"Last Poll took {Math.Round((DateTime.Now - tp).TotalMilliseconds, 2)}ms";
+
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);
 
                 if (s.values.Count > ProcessedRecords)
@@ -70,7 +70,7 @@ namespace TarangBot.GSheetsAdapters
                 Log("Poll failed because of \"" + e.Message + "\"");
                 Tarang.Data.SendDiscordLog("Poll failed because of \"" + e.Message + "\"");
                 Tarang.Data.LastError = "@GSheet integration: [" + e.Message + "]";
-                
+
                 await Tarang.Data.TarangBot.UpdateDashboard();
             }
         }
