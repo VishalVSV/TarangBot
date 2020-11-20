@@ -77,7 +77,7 @@ namespace TarangBot.GeneralUtils
 
         //Credit to Tbone1983 - https://www.codeproject.com/Questions/419563/Get-the-nearest-Match-of-the-string-in-list-of-str
         //Levenshtein Distance modified to be case insensitive
-        private static int LevenshteinDistance(string s, string t)
+        public static int LevenshteinDistance(string s, string t)
         {
             int n = s.Length;
             int m = t.Length;

@@ -54,7 +54,7 @@ namespace TarangBot.DiscordBot
                 builder.Color = Color.Red;
             else builder.Color = Color.Green;
 
-            if (Tarang.Data.LastError != "")
+            if (Tarang.Data.LastError != "" && !Tarang.Stop)
                 builder.Color = new Color(64, 224, 208);
 
             return builder.Build();
@@ -99,22 +99,19 @@ namespace TarangBot.DiscordBot
 
         private Task _client_MessageReceived(SocketMessage arg)
         {
-            if (arg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
+            commandHandler.Handle(arg);
+
+
+            string content = arg.Content.Trim();
+            if (content.StartsWith($"<@{_client.CurrentUser.Id}>"))
             {
-                commandHandler.Handle(arg);
-            }
-            else
-            {
-                string content = arg.Content.Trim();
-                if (content.StartsWith($"<@{_client.CurrentUser.Id}>"))
+                string msg = content.Substring($"<@{_client.CurrentUser.Id}>".Length).ToLower();
+                if (msg == "hey")
                 {
-                    string msg = content.Substring($"<@{_client.CurrentUser.Id}>".Length).ToLower();
-                    if (msg == "hey")
-                    {
-                        arg.Channel.SendMessageAsync($"Hey <@{arg.Author.Id}>");
-                    }
+                    arg.Channel.SendMessageAsync($"Hey <@{arg.Author.Id}>");
                 }
             }
+
             return Task.CompletedTask;
         }
 

@@ -6,12 +6,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using Discord;
+using Newtonsoft.Json;
 
 namespace TarangBot.DiscordBot
 {
     public class CommandHandler
     {
         public Dictionary<string, Type> commands = new Dictionary<string, Type>();
+
+        [JsonIgnore]
+        public Dictionary<ulong, ICommand> current_command = new Dictionary<ulong, ICommand>();
 
         public CommandHandler(string Command_Namespace)
         {
@@ -33,17 +37,28 @@ namespace TarangBot.DiscordBot
             if (msg.Author.IsBot)
                 return;
 
-            string cmd_name = msg.Content.Split('\n', ' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
+            if (!current_command.ContainsKey(msg.Author.Id))
+                current_command.Add(msg.Author.Id, null);
 
-            if (commands.ContainsKey(cmd_name))
+            if (current_command[msg.Author.Id] != null)
             {
-                ICommand cmd = (ICommand)Activator.CreateInstance(commands[cmd_name]);
-
-                cmd.HandleCommand(msg, this);
+                current_command[msg.Author.Id].HandleCommand(msg, this);
             }
             else
             {
-                msg.Channel.SendMessageAsync("Command not found");
+                string cmd_name = msg.Content.Split('\n', ' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
+
+                if (commands.ContainsKey(cmd_name))
+                {
+                    ICommand cmd = (ICommand)Activator.CreateInstance(commands[cmd_name]);
+
+                    cmd.HandleCommand(msg, this);
+                }
+                else
+                {
+                    if (msg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
+                        msg.Channel.SendMessageAsync("Command not found");
+                }
             }
         }
 

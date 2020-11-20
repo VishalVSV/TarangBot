@@ -41,7 +41,9 @@ namespace TarangBot.ConsoleDisplay
                 string[] to_save = new string[lines.Count - Height - LINE_OVERHEAD / 2];
                 for (int i = 0; i < lines.Count - Height - LINE_OVERHEAD / 2; i++)
                 {
-                    to_save[i] = lines.Dequeue();
+                    string tmp = lines.Dequeue();
+                    if (i < to_save.Length)
+                        to_save[i] = tmp;
                 }
                 if (Save)
                     File.AppendAllLines(LogPath, to_save);
