@@ -1,5 +1,7 @@
 # TarangBot
-![Logo.exe](https://github.com/VishalVSV/TarangBot/blob/master/Images/TarangLogo.png?raw=true)
+<p align="center">
+  <img width="460" height="300" src="https://github.com/VishalVSV/TarangBot/blob/master/Images/TarangLogo.png?raw=true">
+</p>
 
 The discord bot written for PSBB Millennium GBKM's cultural event Tarang.
 
