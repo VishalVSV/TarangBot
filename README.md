@@ -3,7 +3,7 @@
   <img width="460" height="300" src="https://github.com/VishalVSV/TarangBot/blob/master/Images/TarangLogo.png?raw=true">
 </p>
 
-The discord bot written for PSBB Millennium GBKM's cultural event Tarang.
+The discord bot written for PSBB Millennium GBKM's cultural event Tarang. Made in C#
 
 ## Features
 ### Automatic google forms registration integration.
