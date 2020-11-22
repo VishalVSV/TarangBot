@@ -45,6 +45,12 @@ namespace TarangBot.ConsoleDisplay
             display.DrawString(0, Height, ">" + current_cmd.ToString());
         }
 
+        public void Clear()
+        {
+            lines.Clear();
+            start_index = 0;
+        }
+
         public override void Log(string s)
         {
             lines.Enqueue($"{(prefix ? "$TarangBot:" : "")} {s}");

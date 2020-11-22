@@ -8,7 +8,13 @@ namespace TarangBot.ConsoleDisplay
 {
     public partial class CDisplay
     {
+        /// <summary>
+        /// Display buffer for the display
+        /// </summary>
         private StringBuilder buffer;
+        /// <summary>
+        /// Stores the element currently being drawn. Used to access the draw commands.
+        /// </summary>
         private DisplayElement currently_drawing;
 
         /// <summary>
@@ -16,19 +22,38 @@ namespace TarangBot.ConsoleDisplay
         /// </summary>
         public int DisplayRefreshRate = 60;
 
+        /// <summary>
+        /// The cancellation token for the draw loop thread
+        /// </summary>
         private CancellationTokenSource draw_loop_cts;
 
+        /// <summary>
+        /// The list of display elements.
+        /// </summary>
         private List<DisplayElement> DisplayElements = new List<DisplayElement>();
 
+        /// <summary>
+        /// The list of keys that have been pressed in that loop. Hardcoded to a maximum of 5 keys per loop. I have no idea why I did that though.
+        /// </summary>
         public List<ConsoleKeyInfo> Keys = new List<ConsoleKeyInfo>(5);
 
+        /// <summary>
+        /// Register an element to be drawn
+        /// </summary>
+        /// <param name="element">The element to be registered</param>
         public void RegisterElement(DisplayElement element)
         {
             DisplayElements.Add(element);
         }
 
+        /// <summary>
+        /// The width and height of the panel
+        /// </summary>
         public int Width, Height;
 
+        /// <summary>
+        /// Resize the internal buffer
+        /// </summary>
         public void Resize()
         {
             Width = Console.WindowWidth;
@@ -45,6 +70,9 @@ namespace TarangBot.ConsoleDisplay
             Resize();
         }
 
+        /// <summary>
+        /// Start the draw loop.
+        /// </summary>
         public void Start()
         {
             Resize();
@@ -52,7 +80,8 @@ namespace TarangBot.ConsoleDisplay
 
             draw_loop_cts = new CancellationTokenSource();
 
-            Task.Run(async () => {
+            Task.Run(async () =>
+            {
                 while (!draw_loop_cts.IsCancellationRequested)
                 {
                     Draw();
@@ -62,12 +91,18 @@ namespace TarangBot.ConsoleDisplay
             }, draw_loop_cts.Token);
         }
 
+        /// <summary>
+        /// Stop the draw loop
+        /// </summary>
         public void Stop()
         {
             draw_loop_cts.Cancel();
 
         }
-        
+
+        /// <summary>
+        /// Poll keys available in the console.
+        /// </summary>
         private void PollKeys()
         {
             Keys.Clear();
@@ -80,13 +115,16 @@ namespace TarangBot.ConsoleDisplay
             }
         }
 
-        public void Draw()
+        /// <summary>
+        /// Draw the screen
+        /// </summary>
+        private void Draw()
         {
             try
             {
                 Clear();
 
-                    PollKeys();
+                PollKeys();
 
                 Console.CursorVisible = false;
                 for (int i = 0; i < DisplayElements.Count; i++)

@@ -262,6 +262,7 @@ namespace TarangBot.GeneralUtils
             Shell.Top = (Console.WindowHeight / 2) + 1;
             Shell.Width = Console.WindowWidth / 2 - 2;
             Shell.Height = Console.WindowHeight / 2 - 3;
+            Shell.Clear();
 
             //StatusDisp = new StatusDisplay(Console.WindowWidth / 2 + 1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
             StatusDisp.Left = Console.WindowWidth / 2 + 1;
