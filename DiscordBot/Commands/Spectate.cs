@@ -34,11 +34,17 @@ namespace TarangBot.DiscordBot.Commands
             var msg0 = msg.Content.ToLower().Trim();
             if (last_event_name != null && (msg0 == "yes" || msg0 == "y" || msg0 == "s"))
             {
-                if (msg0 == "s")
-                    await msg.Channel.SendMessageAsync("Please put some more effort into an affirmative response");
                 commandHandler.current_command[msg.Author.Id] = null;
                 event_name = last_event_name;
             }
+
+            if (last_event_name != null && (msg0 == "no" || msg0 == "n"))
+            {
+                await msg.Channel.SendMessageAsync("ok (;-;)");
+                commandHandler.current_command[msg.Author.Id] = null;
+                return;
+            }
+
             int edits;
             Event event_ = Tarang.Data.GetEvent(event_name, out edits);
 
