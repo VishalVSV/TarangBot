@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
+using System.IO;
+using Discord;
 
 namespace TarangBot.TarangEvent
 {
@@ -16,8 +18,12 @@ namespace TarangBot.TarangEvent
     public class Event
     {
         //Help text
-        public string SmallHelpText;
-        public string DescriptiveHelpText;//Rules
+        [JsonIgnore]
+        public string DescriptiveHelpText;//Desc
+        [JsonIgnore]
+        public string Rules;//Rules
+
+        public string Path_to_Data = "";
 
         public string internal_id = "";
 
@@ -25,7 +31,7 @@ namespace TarangBot.TarangEvent
 
         //Optionals
         public EventType eventType;
-        public bool isTeam  = false;
+        public bool isTeam = false;
 
         //Must Set
         public int MaxParticipants;
@@ -44,16 +50,43 @@ namespace TarangBot.TarangEvent
             }
         }
 
-        public Event(string SmallHelpText,string DescHelpText,string[] names,bool IsTwoDays,int MaxParticipants,EventType eventType,bool isTeam)
+        public Event(string[] names, bool IsTwoDays, int MaxParticipants, EventType eventType, bool isTeam, string path_to_data)
         {
-            this.SmallHelpText = SmallHelpText;
-            DescriptiveHelpText = DescHelpText;
+            Path_to_Data = path_to_data;
+
             this.IsTwoDays = IsTwoDays;
             this.MaxParticipants = MaxParticipants;
             this.eventType = eventType;
             this.isTeam = isTeam;
 
             Names = names;
+        }
+
+        public static implicit operator Embed(Event @event)
+        {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.WithTitle(@event.Names[0]);
+            builder.WithDescription(@event.DescriptiveHelpText);
+
+            builder.AddField("Rules", @event.Rules);
+
+            builder.Color = Color.Blue;
+
+            return builder.Build();
+        }
+
+        public void LoadData()
+        {
+            if (Path_to_Data == null) return;
+
+            if (File.Exists(Path.Combine(Path_to_Data, "metadata.txt")))
+            {
+                string metadata = File.ReadAllText(Path.Combine(Path_to_Data, "metadata.txt"));
+
+                DescriptiveHelpText = metadata.Substring(0, metadata.IndexOf("[Rules]"));
+                Rules = metadata.Substring(metadata.IndexOf("[Rules]") + 7);
+            }
+
         }
     }
 

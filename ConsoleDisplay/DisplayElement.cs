@@ -10,6 +10,8 @@ namespace TarangBot.ConsoleDisplay
 
         public bool Outline = true;
 
+        public virtual void Update() { }
+
         public abstract void Draw(CDisplay display);
     }
 }

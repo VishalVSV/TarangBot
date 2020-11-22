@@ -24,7 +24,7 @@ namespace TarangBot.DiscordBot.Commands
                 for (int i = 0; i < participant.Registered_Events.Count; i++)
                 {
                     Event @event = Tarang.Data.GetEventById(participant.Registered_Events[i]);
-                    events.AppendLine($"{@event.Names[0]} - {@event.SmallHelpText}");
+                    events.AppendLine($"{@event.Names[0]}");
                 }
 
                 builder.WithDescription(events.ToString());

@@ -24,15 +24,12 @@ namespace TarangBot.GeneralUtils
         [JsonIgnore]
         public ScrollingLogger Logger = new ScrollingLogger(1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
         [JsonIgnore]
-        public StatusDisplay StatusDisp = new StatusDisplay(Console.WindowWidth / 2 + 1, 1, Console.WindowWidth / 2 - 2, (Console.WindowHeight / 2) - 2);
+        public StatusDisplay StatusDisp = new StatusDisplay(Console.WindowWidth / 2 + 1, 1, Console.WindowWidth / 2 - 3, (Console.WindowHeight / 2) - 2);
         [JsonIgnore]
         public ScrollingLogger QueueLog = new ScrollingLogger(1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 2, Console.WindowHeight / 2 - 3);
         [JsonIgnore]
-        public TarangShell Shell = new TarangShell(Console.WindowWidth / 2 + 1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 2, Console.WindowHeight / 2 - 3);
-
-        //Unused
-        public List<PollSystem> PollSystem = new List<PollSystem>();
-
+        public TarangShell Shell = new TarangShell(Console.WindowWidth / 2 + 1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 3, Console.WindowHeight / 2 - 3);
+        
         /// <summary>
         /// The message handling queue system instance
         /// </summary>
@@ -218,28 +215,9 @@ namespace TarangBot.GeneralUtils
 
         public void Init()
         {
-            if (!Events_Init)
-            {
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "One Mic Stand" }, true, 1, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fort Boyard" }, true, 3, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Two Faced" }, true, 2, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Whose Line is it anyway" }, true, 2, EventType.Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Fandomania" }, true, 1, EventType.Flagged, false));
-
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "COD" }, true, 6, EventType.Non_Flagged, true));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Step Up" }, true, 2, EventType.Non_Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Trailer it up" }, true, 2, EventType.Non_Flagged, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Synthesize" }, true, 2, EventType.Non_Flagged, false));
-
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Meme-athon" }, true, 2, EventType.Sub, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Pixel" }, true, 2, EventType.Sub, false));
-                raw_events.Add(new Event("TOFILL", "TOFILL", new string[] { "Craft a Block" }, true, 2, EventType.Sub, false));
-
-                Events_Init = true;
-            }
-
             for (int i = 0; i < raw_events.Count; i++)
             {
+                raw_events[i].LoadData();
                 for (int j = 0; j < raw_events[i].Names.Length; j++)
                 {
                     Events.Add(raw_events[i].Names[j], raw_events[i]);
@@ -257,16 +235,10 @@ namespace TarangBot.GeneralUtils
             display.RegisterElement(QueueLog);
             display.RegisterElement(Shell);
             display.RegisterElement(StatusDisp);
-
-            for (int i = 0; i < PollSystem.Count; i++)
-            {
-                PollSystem[i].Init();
-            }
-            
-            DestructionHandler.RegisterDestructible(Logger);
+                      
             DestructionHandler.RegisterDestructible(QueueLog);
-
             DestructionHandler.RegisterDestructible(TarangBot);
+            DestructionHandler.RegisterDestructible(Logger);
 
             GmailDaemon.SetCredentials(MailUsername, Encoding.UTF8.GetString(Convert.FromBase64String(MailPassword)));
         }

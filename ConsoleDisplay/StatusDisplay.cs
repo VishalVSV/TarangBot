@@ -38,6 +38,12 @@ namespace TarangBot.ConsoleDisplay
             Height = height;
         }
 
+        public override void Update()
+        {
+            var t = (DateTime.Now - Tarang.StartTime);
+            Tarang.Data.StatusDisp["Uptime"] = $"{t.Days} Days {t.Hours} hrs {t.Minutes} mins {t.Seconds} secs";
+        }
+
         public override void Draw(CDisplay display)
         {
             try

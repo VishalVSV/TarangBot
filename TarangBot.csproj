@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TarangEvent\Events\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="InviteMail.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

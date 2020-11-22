@@ -16,17 +16,18 @@ namespace TarangBot.DiscordBot.Commands
 
         public async Task HandleCommand(SocketMessage msg, CommandHandler commandHandler)
         {
+            if (commandHandler.current_command[msg.Author.Id] != null)
+                commandHandler.current_command[msg.Author.Id] = null;
+
             if ((msg.Author as SocketGuildUser).VoiceChannel == null)
             {
                 await msg.Channel.SendMessageAsync($"Join a VC first then run the spectate command");
                 return;
             }
 
-
-
             string event_name = "";
 
-            if(msg.Content.Length > Tarang.Data.DiscordBotPrefix.Length + "spectate".Length)
+            if (msg.Content.Length > Tarang.Data.DiscordBotPrefix.Length + "spectate".Length)
             {
                 event_name = msg.Content.Substring(Tarang.Data.DiscordBotPrefix.Length + "spectate".Length).Trim();
             }
@@ -64,11 +65,15 @@ namespace TarangBot.DiscordBot.Commands
                     await msg.Channel.SendMessageAsync($"Couldn't find VC or event cannot be spectated");
                 }
             }
-            else
+            else if (edits < 5)
             {
                 await msg.Channel.SendMessageAsync($"Could not find event {event_name}. Did you mean {event_.Names[0]}?");
                 commandHandler.current_command[msg.Author.Id] = this;
                 last_event_name = event_.Names[0];
+            }
+            else
+            {
+                await msg.Channel.SendMessageAsync($"Did not find any event called {event_name}!");
             }
 
 

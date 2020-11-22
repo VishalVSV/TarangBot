@@ -70,6 +70,10 @@ namespace TarangBot.DiscordBot.Commands
 
                         await msg.Channel.SendMessageAsync(null, false, help.Build());
                     }
+                    else
+                    {
+                        await msg.Channel.SendMessageAsync($"Command {cmd_name} not found!");
+                    }
                 }
                 else
                 {

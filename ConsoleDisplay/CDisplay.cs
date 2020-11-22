@@ -93,6 +93,7 @@ namespace TarangBot.ConsoleDisplay
                 {
                     currently_drawing = DisplayElements[i];
 
+                    DisplayElements[i].Update();
                     DisplayElements[i].Draw(this);
 
                     if (DisplayElements[i].Outline)

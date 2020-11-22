@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using TarangBot.DiscordBot;
 
 namespace TarangBot.ConsoleDisplay
 {
     public class TarangShell : ScrollingLogger
     {
         StringBuilder current_cmd = new StringBuilder();
+
+        bool prefix = true;
 
         public TarangShell(int x, int y, int width, int height) : base(x, y, width, height)
         {
@@ -44,7 +47,7 @@ namespace TarangBot.ConsoleDisplay
 
         public override void Log(string s)
         {
-            lines.Enqueue($"$TarangBot: {s}");
+            lines.Enqueue($"{(prefix ? "$TarangBot:" : "")} {s}");
             if (lines.Count - start_index > Height)
                 start_index++;
 
@@ -74,6 +77,31 @@ namespace TarangBot.ConsoleDisplay
             {
                 Tarang.Data.Resize();
                 Tarang.Data.display.Resize();
+            }
+            else if (cmd.Trim() == "executing-cmds")
+            {
+                prefix = false;
+
+                foreach (var (id, command) in Tarang.Data.TarangBot.commandHandler.current_command)
+                {
+                    if (command != null)
+                    {
+                        Log($"->{Tarang.Data.TarangBot._client.GetUser(id).Username} is executing {command.GetType().Name}");
+                    }
+                }
+
+                prefix = true;
+            }
+            else if (cmd.Trim() == "cmds")
+            {
+                prefix = false;
+
+                Log(" stop");
+                Log(" resize");
+                Log(" executing-cmds");
+                Log(" cmds");
+
+                prefix = true;
             }
         }
     }

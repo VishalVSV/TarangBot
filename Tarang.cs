@@ -17,9 +17,11 @@ namespace TarangBot
 
         public static TimeSpan AvgLoopTimeUpdateInterval = TimeSpan.FromSeconds(5);
 
+        public static DateTime StartTime;
+
         public static async Task Main()
         {
-            DateTime StartTime = DateTime.Now;
+            StartTime = DateTime.Now;
 
             if (!File.Exists("./Data/config.txt"))
             {
@@ -65,8 +67,6 @@ namespace TarangBot
                 if((DateTime.Now - last_time_update) > AvgLoopTimeUpdateInterval)
                 {
                     Data.StatusDisp["Average loop time"] = Math.Round(avg_time,2).ToString() + "ms";
-                    var t = (DateTime.Now - StartTime);
-                    Data.StatusDisp["Uptime"] = $"{t.Days} Days {t.Hours} hrs {t.Minutes} mins";
                     last_time_update = DateTime.Now;
                 }
 
@@ -78,10 +78,11 @@ namespace TarangBot
                 {
                     await Data.TarangBot.UpdateDashboard();
 
-                    Data.display.Stop();
                     
                     await bot;
                     DestructionHandler.DestroyAll();
+
+                    Data.display.Stop();
 
                     Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings();
                     settings.Formatting = Newtonsoft.Json.Formatting.Indented;

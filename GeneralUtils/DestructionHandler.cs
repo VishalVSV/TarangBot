@@ -17,6 +17,7 @@ namespace TarangBot.GeneralUtils
         {
             for (int i = 0; i < Destructibles.Count; i++)
             {
+                Tarang.Data.Logger.Log($"Destroying {Destructibles[i].GetType().Name}");
                 Destructibles[i].OnDestroy();
             }
         }
