@@ -35,7 +35,7 @@ namespace TarangBot.DiscordBot.Commands
 
             time += $"{t.Seconds} seconds";
 
-            await msg.Channel.SendMessageAsync($"TarangBot has been alive for {time}");
+            await msg.Channel.SendMessageAsync($"TarangBot has been live for {time}");
         }
 
         public string HelpText()
