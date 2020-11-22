@@ -27,7 +27,17 @@ namespace TarangBot
             Console.WriteLine("Press any button to continue...");
             Console.ReadKey(true);
 
-            Main().Wait();
+            while (!Tarang.Stop)
+            {
+                try
+                {
+                    Main().Wait();
+                }
+                catch (Exception e)
+                {
+                    Tarang.Data.SendDiscordLog($"FATAL: {e.Message}");
+                }
+            }
         }
 
         static async Task Main()
