@@ -47,23 +47,24 @@ namespace TarangBot.GSheetsAdapters
             DateTime tp = DateTime.Now;
             try
             {
-                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:CT?key={API_key}");
+                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:DA?key={API_key}");
                 Tarang.Data.StatusDisp["Poll Status"] = $"Last Poll took {Math.Round((DateTime.Now - tp).TotalMilliseconds, 2)}ms";
 
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);
 
-                if (s.values.Count > ProcessedRecords)
-                {
-                    for (int i = ProcessedRecords; i < s.values.Count; i++)
+                if (s.values != null)
+                    if (s.values.Count > ProcessedRecords)
                     {
-                        ProcessedRecords++;
-                        if (s.values[i].Length > 0)
+                        for (int i = ProcessedRecords; i < s.values.Count; i++)
                         {
-                            records.Add(s.values[i]);
-                            OnNewRecord?.Invoke(new Registration(s.values[i]));
+                            ProcessedRecords++;
+                            if (s.values[i].Length > 0)
+                            {
+                                records.Add(s.values[i]);
+                                OnNewRecord?.Invoke(new Registration(s.values[i]));
+                            }
                         }
                     }
-                }
             }
             catch (Exception e)
             {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TarangBot.MailIntegration
 {
@@ -29,10 +31,14 @@ namespace TarangBot.MailIntegration
             Ready = true;
         }
 
-        public static void SendMail(string to, string subject, string body, bool isHTML)
+        public static async void SendMail(string to, string subject, string body, bool isHTML)
         {
-            if (!Ready)
-                return;
+            await Task.Run(() => {
+                while (!Ready)
+                {
+                    Thread.SpinWait(20);
+                }
+            });
 
             MailMessage mail = new MailMessage(self, to);
 

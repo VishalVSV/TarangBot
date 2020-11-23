@@ -46,18 +46,21 @@ namespace TarangBot.DiscordBot
             }
             else
             {
-                string cmd_name = msg.Content.Split('\n', ' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
-
-                if (commands.ContainsKey(cmd_name))
+                if (msg.Content.Split('\n', ' ')[0].Length >= Tarang.Data.DiscordBotPrefix.Length)
                 {
-                    ICommand cmd = (ICommand)Activator.CreateInstance(commands[cmd_name]);
+                    string cmd_name = msg.Content.Split('\n', ' ')[0].Substring(Tarang.Data.DiscordBotPrefix.Length);
 
-                    cmd.HandleCommand(msg, this);
-                }
-                else
-                {
-                    if (msg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
-                        msg.Channel.SendMessageAsync("Command not found");
+                    if (commands.ContainsKey(cmd_name))
+                    {
+                        ICommand cmd = (ICommand)Activator.CreateInstance(commands[cmd_name]);
+
+                        cmd.HandleCommand(msg, this);
+                    }
+                    else
+                    {
+                        if (msg.Content.StartsWith(Tarang.Data.DiscordBotPrefix))
+                            msg.Channel.SendMessageAsync("Command not found");
+                    }
                 }
             }
         }

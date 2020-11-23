@@ -67,6 +67,8 @@ namespace TarangBot.GeneralUtils
 
         public string LastError = "";
 
+        public string DiscordInvite = "https://discord.gg/kgMVXuDd9E";
+
         public HashSet<Participant> participants = new HashSet<Participant>();
 
         [JsonIgnore]

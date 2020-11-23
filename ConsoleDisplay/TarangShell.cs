@@ -84,6 +84,16 @@ namespace TarangBot.ConsoleDisplay
                 Tarang.Data.Resize();
                 Tarang.Data.display.Resize();
             }
+            else if (cmd.Trim() == "reload-config")
+            {
+                prefix = false;
+                Log("Reloading config...");
+                DateTime t = DateTime.Now;
+                Tarang.ReloadConfig();
+
+                Log($"Config reloaded in {Math.Round((DateTime.Now - t).TotalMilliseconds,2)} ms");
+                prefix = true;
+            }
             else if (cmd.Trim() == "executing-cmds")
             {
                 prefix = false;
@@ -106,6 +116,7 @@ namespace TarangBot.ConsoleDisplay
                 Log(" resize");
                 Log(" executing-cmds");
                 Log(" cmds");
+                Log(" reload-config");
 
                 prefix = true;
             }

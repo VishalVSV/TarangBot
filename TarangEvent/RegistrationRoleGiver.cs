@@ -22,11 +22,11 @@ namespace TarangBot.TarangEvent
             {
                 Registration registration = (Registration)new_registration[0];
 
-                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite",File.ReadAllText("./InviteMail.html").Replace("$--link--$", "https://discord.gg/kgMVXuDd9E"),true);
+                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite",File.ReadAllText("./InviteMail.html").Replace("$--link--$", Tarang.Data.DiscordInvite),true);
 
                 foreach (Participant participant in registration.participants.Values)
                 {
-                    UsernamesToAssign.Add(participant.UserName, participant);
+                    UsernamesToAssign.Add(participant.UserName.Split('#')[0].Trim()+"#"+ participant.UserName.Split('#')[1].Trim(), participant);
                     Tarang.Data.participants.Add(participant);
                 }
             });

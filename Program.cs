@@ -36,6 +36,7 @@ namespace TarangBot
                 catch (Exception e)
                 {
                     Tarang.Data.SendDiscordLog($"FATAL: {e.Message}");
+                    File.WriteAllText("./crash.txt", e.StackTrace);
                 }
             }
         }

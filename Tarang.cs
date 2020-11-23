@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TarangBot.GeneralUtils;
+using TarangBot.MailIntegration;
 using TarangBot.TarangEvent;
 
 namespace TarangBot
@@ -18,6 +19,44 @@ namespace TarangBot
         public static TimeSpan AvgLoopTimeUpdateInterval = TimeSpan.FromSeconds(5);
 
         public static DateTime StartTime;
+
+        public static void ReloadConfig()
+        {
+            if (!File.Exists("./Data/config.txt"))
+            {
+                throw new Exception("Config file not found!");
+            }
+
+            TarangData data = TarangData.Load("./Data/config.txt");
+
+            Data.AnnouncementChannel = data.AnnouncementChannel;
+            Data.BotMessagesChannel = data.BotMessagesChannel;
+            Data.DashboardChannel = data.DashboardChannel;
+            Data.DashboardMessageId = data.DashboardMessageId;
+            Data.DiscordBotPrefix = data.DiscordBotPrefix;
+            Data.DiscordBotToken = data.DiscordBotToken;
+            Data.DiscordInvite = data.DiscordInvite;
+            Data.GuildId = data.GuildId;
+            Data.LastError = data.LastError;
+            Data.MailPassword = data.MailPassword;
+            Data.MailUsername = data.MailUsername;
+            Data.participants = data.participants;
+            Data.raw_events = data.raw_events;
+            Data.SheetPollInterval = data.SheetPollInterval;
+
+            Data.Events.Clear();
+
+            for (int i = 0; i < Data.raw_events.Count; i++)
+            {
+                Data.raw_events[i].LoadData();
+                for (int j = 0; j < Data.raw_events[i].Names.Length; j++)
+                {
+                    Data.Events.Add(Data.raw_events[i].Names[j], Data.raw_events[i]);
+                }
+            }
+
+            GmailDaemon.SetCredentials(Data.MailUsername, Encoding.UTF8.GetString(Convert.FromBase64String(Data.MailPassword)));
+        }
 
         public static async Task Main()
         {
@@ -49,7 +88,7 @@ namespace TarangBot
 
             DateTime last_sheet_poll = DateTime.Now;
             bool end = false;
-            
+
             Data.roleGiver.Init();
 
             double avg_time = 0;
@@ -64,9 +103,9 @@ namespace TarangBot
                     await Data.sheetAdapter.Poll();
                     last_sheet_poll = DateTime.Now;
                 }
-                if((DateTime.Now - last_time_update) > AvgLoopTimeUpdateInterval)
+                if ((DateTime.Now - last_time_update) > AvgLoopTimeUpdateInterval)
                 {
-                    Data.StatusDisp["Average loop time"] = Math.Round(avg_time,2).ToString() + "ms";
+                    Data.StatusDisp["Average loop time"] = Math.Round(avg_time, 2).ToString() + "ms";
                     last_time_update = DateTime.Now;
                 }
 
@@ -78,7 +117,7 @@ namespace TarangBot
                 {
                     await Data.TarangBot.UpdateDashboard();
 
-                    
+
                     await bot;
                     DestructionHandler.DestroyAll();
 
