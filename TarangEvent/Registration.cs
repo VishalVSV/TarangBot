@@ -77,7 +77,7 @@ namespace TarangBot.TarangEvent
             }
             catch(Exception e)
             {
-                Console.Write("");
+                Tarang.Data.Logger.Log($"Something went wrong parsing the registration: {e.Message}");
             }
         }
     }

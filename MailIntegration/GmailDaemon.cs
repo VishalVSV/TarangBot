@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading;
@@ -37,18 +38,24 @@ namespace TarangBot.MailIntegration
                     Thread.SpinWait(20);
                 }
             });
+            try
+            {
+                MailMessage mail = new MailMessage(self, to);
 
-            MailMessage mail = new MailMessage(self, to);
+                mail.Subject = subject;
+                mail.SubjectEncoding = Encoding.UTF8;
 
-            mail.Subject = subject;
-            mail.SubjectEncoding = Encoding.UTF8;
+                mail.Body = body;
+                mail.BodyEncoding = Encoding.UTF8;
 
-            mail.Body = body;
-            mail.BodyEncoding = Encoding.UTF8;
+                mail.IsBodyHtml = isHTML;
 
-            mail.IsBodyHtml = isHTML;
-
-            client.Send(mail);
+                client.Send(mail);
+            }
+            catch(Exception e)
+            {
+                Tarang.Data.Logger.Log($"Mail couldn't be sent because of {e.Message}");
+            }
         }
     }
 }
