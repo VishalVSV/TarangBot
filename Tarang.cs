@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TarangBot.GeneralUtils;
 using TarangBot.MailIntegration;
-using TarangBot.TarangEvent;
 
 namespace TarangBot
 {
@@ -17,6 +15,7 @@ namespace TarangBot
         public static bool Stop = false;
 
         public static TimeSpan AvgLoopTimeUpdateInterval = TimeSpan.FromSeconds(5);
+        public static TimeSpan AutoSaveInterval = TimeSpan.FromMinutes(2);
 
         public static DateTime StartTime;
 
@@ -94,6 +93,7 @@ namespace TarangBot
             double avg_time = 0;
 
             DateTime last_time_update = DateTime.Now;
+            DateTime last_auto_save = DateTime.Now;
 
             while (!end)
             {
@@ -107,6 +107,17 @@ namespace TarangBot
                 {
                     Data.StatusDisp["Average loop time"] = Math.Round(avg_time, 2).ToString() + "ms";
                     last_time_update = DateTime.Now;
+                }
+                if ((DateTime.Now - last_auto_save) > AutoSaveInterval)
+                {
+                    Data.Logger.Log("Auto saving...");
+
+                    DateTime t = DateTime.Now;
+                    Newtonsoft.Json.JsonSerializerSettings settings = new Newtonsoft.Json.JsonSerializerSettings();
+                    settings.Formatting = Newtonsoft.Json.Formatting.Indented;
+
+                    File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, settings));
+                    Data.Logger.Log($"Auto save completed in {Math.Round((DateTime.Now - t).TotalMilliseconds, 2)} ms");
                 }
 
                 Data.MessageQueue.HandleEvents();

@@ -1,11 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using TarangBot.ConsoleDisplay;
-using TarangBot.GeneralUtils;
-using TarangBot.GSheetsAdapters;
-using TarangBot.MessagingUtils;
 
 namespace TarangBot
 {
@@ -26,6 +21,12 @@ namespace TarangBot
             Console.WriteLine();
             Console.WriteLine("Press any button to continue...");
             Console.ReadKey(true);
+
+            AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
+            {
+                Tarang.Data.SendDiscordLog($"FATAL: {e.Exception.Message}");
+                File.WriteAllText("./errors.txt", e.Exception.ToString() + Environment.NewLine + e.Exception.StackTrace.ToString());
+            };
 
             while (!Tarang.Stop)
             {

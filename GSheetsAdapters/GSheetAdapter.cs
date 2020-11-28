@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -47,7 +46,7 @@ namespace TarangBot.GSheetsAdapters
             DateTime tp = DateTime.Now;
             try
             {
-                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/{SheetName}!A3:DA?key={API_key}");
+                string get = await httpClient.GetStringAsync($"https://sheets.googleapis.com/v4/spreadsheets/{Sheet_Id}/values/\'{SheetName}\'!A3:DA?key={API_key}");
                 Tarang.Data.StatusDisp["Poll Status"] = $"Last Poll took {Math.Round((DateTime.Now - tp).TotalMilliseconds, 2)}ms";
 
                 SheetsResponse s = JsonConvert.DeserializeObject<SheetsResponse>(get);

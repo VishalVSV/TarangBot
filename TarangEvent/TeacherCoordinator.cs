@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TarangBot.TarangEvent
+﻿namespace TarangBot.TarangEvent
 {
     public class TeacherCoordinator : RoleAssignable
     {

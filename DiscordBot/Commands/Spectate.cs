@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using TarangBot.GeneralUtils;
 using TarangBot.TarangEvent;
 
 namespace TarangBot.DiscordBot.Commands

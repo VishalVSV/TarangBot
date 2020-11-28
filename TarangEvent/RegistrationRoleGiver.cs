@@ -1,8 +1,5 @@
 ﻿using Discord.WebSocket;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
 using TarangBot.MailIntegration;
 using System.IO;
 

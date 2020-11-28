@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TarangBot.ConsoleDisplay
+﻿namespace TarangBot.ConsoleDisplay
 {
     public abstract class DisplayElement
     {
