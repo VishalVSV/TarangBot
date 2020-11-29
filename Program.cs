@@ -22,11 +22,6 @@ namespace TarangBot
             Console.WriteLine("Press any button to continue...");
             Console.ReadKey(true);
 
-            AppDomain.CurrentDomain.FirstChanceException += (sender, e) =>
-            {
-                Tarang.Data.SendDiscordLog($"FATAL: {e.Exception.Message}");
-                File.WriteAllText("./errors.txt", e.Exception.ToString() + Environment.NewLine + e.Exception.StackTrace.ToString());
-            };
 
             while (!Tarang.Stop)
             {

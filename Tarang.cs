@@ -12,6 +12,8 @@ namespace TarangBot
     {
         public static TarangData Data;
 
+        public static Mutex data_mutex = new Mutex();
+
         public static bool Stop = false;
 
         public static TimeSpan AvgLoopTimeUpdateInterval = TimeSpan.FromSeconds(5);
@@ -94,6 +96,7 @@ namespace TarangBot
 
             DateTime last_time_update = DateTime.Now;
             DateTime last_auto_save = DateTime.Now;
+            DateTime last_easter_egg = DateTime.Now;
 
             while (!end)
             {
@@ -108,6 +111,11 @@ namespace TarangBot
                     Data.StatusDisp["Average loop time"] = Math.Round(avg_time, 2).ToString() + "ms";
                     last_time_update = DateTime.Now;
                 }
+                if ((DateTime.Now - last_easter_egg) > TimeSpan.FromMinutes(30))
+                {
+                    await Data.TarangBot.CycleStatus();
+                    last_easter_egg = DateTime.Now;
+                }
                 if ((DateTime.Now - last_auto_save) > AutoSaveInterval)
                 {
                     Data.Logger.Log("Auto saving...");
@@ -118,6 +126,8 @@ namespace TarangBot
 
                     File.WriteAllText("./Data/config.txt", Newtonsoft.Json.JsonConvert.SerializeObject(Data, settings));
                     Data.Logger.Log($"Auto save completed in {Math.Round((DateTime.Now - t).TotalMilliseconds, 2)} ms");
+
+                    last_auto_save = DateTime.Now;
                 }
 
                 Data.MessageQueue.HandleEvents();

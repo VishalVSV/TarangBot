@@ -26,7 +26,9 @@ namespace TarangBot.DiscordBot
             _client.MessageReceived += _client_MessageReceived;
             _client.Ready += _client_Ready;
 
+
             await _client.LoginAsync(TokenType.Bot, Tarang.Data.DiscordBotToken);
+
 
             await _client.StartAsync();
 
@@ -35,6 +37,7 @@ namespace TarangBot.DiscordBot
 
         public Embed ConstructDashboard()
         {
+
             EmbedBuilder builder = new EmbedBuilder();
 
             builder.WithTitle("Tarang Bot Dashboard");
@@ -55,6 +58,8 @@ namespace TarangBot.DiscordBot
             if (Tarang.Data.LastError != "" && !Tarang.Stop)
                 builder.Color = new Color(64, 224, 208);
 
+
+
             return builder.Build();
         }
 
@@ -62,12 +67,14 @@ namespace TarangBot.DiscordBot
         {
             try
             {
+
                 var a = _client.GetGuild(Tarang.Data.GuildId).GetTextChannel(Tarang.Data.DashboardChannel);
                 var m = (await a.GetMessageAsync(Tarang.Data.DashboardMessageId)) as RestUserMessage;
                 await (m).ModifyAsync((msg) =>
                 {
                     msg.Embed = ConstructDashboard();
                 });
+
             }
             catch (Exception)
             {
@@ -76,21 +83,45 @@ namespace TarangBot.DiscordBot
 
         private async Task _client_Ready()
         {
-            Game game = new Game("Tarang 2020", ActivityType.Playing, ActivityProperties.Instance);
-
-            await _client.SetActivityAsync(game);
+            await CycleStatus();
 
             Tarang.Data.MessageQueue.On("NewRegistration", async (o) =>
               {
                   await UpdateDashboard();
               });
 
+
             await UpdateDashboard();
+        }
+
+        private int status = 0;
+        public async Task CycleStatus()
+        {
+            if (status == 0)
+            {
+                Game game = new Game("Tarang 2020", ActivityType.Playing, ActivityProperties.Instance);
+
+                await _client.SetActivityAsync(game);
+            }
+            else if (status == 1)
+            {
+                Game game = new Game("Created by Vertex and Shan10", ActivityType.Playing, ActivityProperties.Instance);
+
+                await _client.SetActivityAsync(game);
+            }
+
+            status += 1;
+            if (status >= 2)
+            {
+                status = 0;
+            }
         }
 
         private Task _client_UserLeft(SocketGuildUser arg)
         {
+
             Tarang.Data.MessageQueue.Dispatch("UserLeft", arg);
+
 
             return Task.CompletedTask;
         }
@@ -113,16 +144,20 @@ namespace TarangBot.DiscordBot
             return Task.CompletedTask;
         }
 
-        private Task _client_Log(Discord.LogMessage arg)
+        private Task _client_Log(LogMessage arg)
         {
+
             Tarang.Data.Logger.Log(arg.Message);
+
 
             return Task.CompletedTask;
         }
 
         private Task _client_UserJoined(SocketGuildUser arg)//Move to a separate class to organize state the bot should only dispatch events
         {
+
             Tarang.Data.MessageQueue.Dispatch("OnUserJoin", arg);
+
 
             return Task.CompletedTask;
         }
