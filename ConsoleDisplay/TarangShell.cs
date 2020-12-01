@@ -106,6 +106,11 @@ namespace TarangBot.ConsoleDisplay
 
                 prefix = true;
             }
+            else if (cmd.Trim() == "toggle-mail")
+            {
+                Tarang.Data.MailEnabled = !Tarang.Data.MailEnabled;
+                Tarang.Data.StatusDisp["MailEnabled"] = Tarang.Data.MailEnabled.ToString();
+            }
             else if (cmd.Trim() == "cmds")
             {
                 prefix = false;
@@ -115,6 +120,7 @@ namespace TarangBot.ConsoleDisplay
                 Log(" executing-cmds");
                 Log(" cmds");
                 Log(" reload-config");
+                Log(" toggle-mail");
 
                 prefix = true;
             }

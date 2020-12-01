@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TarangBot.MailIntegration;
 using System.IO;
+using System;
 
 namespace TarangBot.TarangEvent
 {
@@ -19,10 +20,13 @@ namespace TarangBot.TarangEvent
             {
                 Registration registration = (Registration)new_registration[0];
 
-                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite", File.ReadAllText("./InviteMail.html").Replace("$--link--$", Tarang.Data.DiscordInvite), true);
+                if (Tarang.Data.MailEnabled)
+                    GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite", File.ReadAllText("./InviteMail.html").Replace("$--link--$", Tarang.Data.DiscordInvite), true);
 
                 foreach (Participant participant in registration.participants.Values)
                 {
+                    if (!participant.UserName.Contains('#'))
+                        continue;
                     string user = participant.UserName.Split('#')[0].Trim() + "#" + participant.UserName.Split('#')[1].Trim();
 
 

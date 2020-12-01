@@ -29,7 +29,7 @@ namespace TarangBot.GeneralUtils
         public ScrollingLogger QueueLog = new ScrollingLogger(1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 2, Console.WindowHeight / 2 - 3);
         [JsonIgnore]
         public TarangShell Shell = new TarangShell(Console.WindowWidth / 2 + 1, (Console.WindowHeight / 2) + 1, Console.WindowWidth / 2 - 3, Console.WindowHeight / 2 - 3);
-        
+
         /// <summary>
         /// The message handling queue system instance
         /// </summary>
@@ -64,6 +64,8 @@ namespace TarangBot.GeneralUtils
 
         public string MailUsername = "";
         public string MailPassword = "";
+
+        public bool MailEnabled = true;
 
         public string LastError = "";
 
@@ -198,7 +200,8 @@ namespace TarangBot.GeneralUtils
 
         public void SendDiscordLog(string s)
         {
-            (TarangBot._client.GetGuild(GuildId).GetTextChannel(BotMessagesChannel)).SendMessageAsync(s);
+            if (s != null)
+                (TarangBot._client.GetGuild(GuildId).GetTextChannel(BotMessagesChannel)).SendMessageAsync(s);
         }
 
         [JsonIgnore]
@@ -239,7 +242,7 @@ namespace TarangBot.GeneralUtils
             display.RegisterElement(QueueLog);
             display.RegisterElement(Shell);
             display.RegisterElement(StatusDisp);
-                      
+
             DestructionHandler.RegisterDestructible(QueueLog);
             DestructionHandler.RegisterDestructible(TarangBot);
             DestructionHandler.RegisterDestructible(Logger);

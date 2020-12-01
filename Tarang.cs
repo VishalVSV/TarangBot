@@ -98,6 +98,7 @@ namespace TarangBot
             DateTime last_auto_save = DateTime.Now;
             DateTime last_easter_egg = DateTime.Now;
 
+            Tarang.Data.StatusDisp["MailEnabled"] = Tarang.Data.MailEnabled.ToString();
             while (!end)
             {
                 DateTime tp = DateTime.Now;
