@@ -19,12 +19,36 @@ namespace TarangBot.TarangEvent
             {
                 Registration registration = (Registration)new_registration[0];
 
-                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite",File.ReadAllText("./InviteMail.html").Replace("$--link--$", Tarang.Data.DiscordInvite),true);
+                GmailDaemon.SendMail(registration.TeacherCoordinator.email_id, "Tarang 2020 Discord Invite", File.ReadAllText("./InviteMail.html").Replace("$--link--$", Tarang.Data.DiscordInvite), true);
 
                 foreach (Participant participant in registration.participants.Values)
                 {
-                    UsernamesToAssign.Add(participant.UserName.Split('#')[0].Trim()+"#"+ participant.UserName.Split('#')[1].Trim(), participant);
-                    Tarang.Data.participants.Add(participant);
+                    string user = participant.UserName.Split('#')[0].Trim() + "#" + participant.UserName.Split('#')[1].Trim();
+
+
+                    if (UsernamesToAssign.ContainsKey(user))
+                    {
+                        foreach (string id in participant.Registered_Events)
+                        {
+                            if (!UsernamesToAssign[user].Registered_Events.Contains(id))
+                            {
+                                UsernamesToAssign[user].Registered_Events.Add(id);
+                            }
+                        }
+                        Tarang.Data.participants.RemoveWhere((p) => p.UserName == participant.UserName);
+                        Tarang.Data.participants.Add(UsernamesToAssign[user]);
+                    }
+                    else
+                    {
+                        UsernamesToAssign.Add(user, participant);
+                        Tarang.Data.participants.Add(participant);
+                    }
+
+                    SocketGuildUser disc_user;
+                    if ((disc_user = Tarang.Data.TarangBot._client.GetUser(participant.UserName.Split('#')[0].Trim(), participant.UserName.Split('#')[1].Trim()) as SocketGuildUser) != null)
+                    {
+                        disc_user.AddRolesAsync(UsernamesToAssign[user].GetRoles());
+                    }
                 }
             });
 
